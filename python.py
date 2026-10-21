@@ -1,3 +1,5 @@
+#Acesta este fisierul meu facut in timpul orei, dar nu are si fisierul .html cu interfata site-ului deoarece nu folosesc AI
+#si am decis sa dau push in branch-ul meu cu proiectul din main
 from fastapi import FastAPI
 
 app = FastAPI()
