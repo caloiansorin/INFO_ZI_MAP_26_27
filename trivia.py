@@ -1,4 +1,4 @@
-
+# eu sunt cartoful smecher
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from dotenv import load_dotenv
