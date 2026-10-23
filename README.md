@@ -13,7 +13,7 @@ Weather conditions affect everyday decisions, from choosing the right clothes to
 This project provides a simple intuitive way for retrieving and displaying current weather information, as it only displays relevant data such as the temperature, wind speed, and a search bar for looking up the weather by city rather than overstimulating the user with incredible amounts of data scattered everywhere.
 
 
-
+<!--
 
 
 # Documentatie tehnica
@@ -30,3 +30,4 @@ This project provides a simple intuitive way for retrieving and displaying curre
 11. Autori
 12. Licență
 
+-->
