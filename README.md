@@ -1,10 +1,10 @@
 <!-- Comments are for documenting which parts where last updated -->
 # SimpleWeatherApp: A Simple Solution to a Daily Problem
 
-## Abstract <!-- Nichita. 10:32, 23.10.2026, TBU -->
+## Abstract <!-- Nichita. 10:36, 23.10.2026, TBU -->
 
 
-Checking the weather can be inconvenient when it consists of searching through forecasts and data that is simply not needed when someone just wants a quick weather update. SimpleWeatherApp provides an easy-to-use solution, allowing users to check things such as temperature, wind speed, humidity, and other essential data. The app is built on FastAPI, as we prioritize users with lower-end devices. It focuses on presenting a small selection of weather details in a simple interface.
+Checking the weather can be inconvenient when it consists of searching through forecasts and data that is simply not needed when someone just wants a quick weather update. SimpleWeatherApp provides an easy-to-use solution, allowing users to check things such as temperature, wind speed, humidity, and other essential data. The app is built on FastAPI, as we prioritize users with lower-end devices. Its main purpose is to allow the user to quickly check the weather without cluttering the UI with too many details.
 
 
 ## Introduction <!-- Nichita. 10:10, 23.10.2026 -->
