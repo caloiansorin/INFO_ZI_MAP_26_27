@@ -1,4 +1,4 @@
-# Va URMA
+# Documentatie tehnica
 1. Titlul proiectului
 2. Descriere
 3. Funcționalități
