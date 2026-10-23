@@ -1,97 +1,104 @@
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ro">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aplicație Meteo</title>
-
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #dbeafe, #eff6ff);
-        }
-
-        .weather-card {
-            width: 340px;
-            max-width: calc(100% - 32px);
-            padding: 36px 28px;
-            border-radius: 24px;
-            background: white;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(30, 64, 175, 0.12);
-        }
-
-        .city {
-            margin: 0;
-            font-size: 28px;
-            color: #1e293b;
-        }
-
-        .weather-icon {
-            font-size: 64px;
-            margin: 22px 0 8px;
-        }
-
-        .temperature {
-            font-size: 64px;
-            font-weight: bold;
-            color: #2563eb;
-            margin: 0;
-        }
-
-        .condition {
-            color: #64748b;
-            font-size: 18px;
-            margin: 12px 0 26px;
-        }
-
-        .wind {
-            border-top: 1px solid #e2e8f0;
-            padding-top: 22px;
-            color: #334155;
-            font-size: 16px;
-        }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #dbeafe, #eff6ff);
+      }
+      .weather-card {
+        width: 420px;
+        max-width: calc(100% - 32px);
+        padding: 32px 24px;
+        border-radius: 24px;
+        background: white;
+        box-shadow: 0 15px 40px rgba(30, 64, 175, 0.12);
+      }
+      form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+      }
+      input {
+        flex: 1;
+        padding: 12px 14px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font-size: 16px;
+      }
+      button {
+        padding: 12px 16px;
+        border: none;
+        border-radius: 10px;
+        background: #2563eb;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .weather-icon {
+        font-size: 56px;
+        text-align: center;
+        margin: 12px 0;
+      }
+      .city {
+        margin: 0;
+        font-size: 28px;
+        text-align: center;
+        color: #1e293b;
+      }
+      .temperature {
+        font-size: 52px;
+        font-weight: bold;
+        color: #2563eb;
+        text-align: center;
+        margin: 10px 0;
+      }
+      .condition,
+      .wind,
+      .error {
+        text-align: center;
+        color: #334155;
+        font-size: 18px;
+      }
+      .error {
+        color: #b91c1c;
+        margin-bottom: 14px;
+      }
     </style>
-</head>
-
-<body>
-<script>
-        async function afiseazaMesaj() {
-            const raspuns = await fetch("/mesaj");
-            const date = await raspuns.json();
-
-            document.getElementById("starea_vremii").innerText =
-                date.starea_vremii[0];
-            document.getElementById("temperatura").innerText =
-                date.starea_vremii[1];
-            document.getElementById("viteza_vant").innerText =
-                date.starea_vremii[2];
-        }
-        document.addEventListener("DOMContentLoaded", afiseazaMesaj);
-    </script>
+  </head>
+  <body>
     <div class="weather-card">
-        <h1 class="city">Bacău</h1>
+      <form method="get" action="/">
+        <input
+          type="text"
+          name="oras"
+          value="{{ oras or '' }}"
+          placeholder="Introdu numele orașului"
+          required
+        />
+        <button type="submit">Caută</button>
+      </form>
 
-        <div class="weather-icon">⛅</div>
-
-        <p class="temperature" id="temperatura"></p>
-
-        <p class="condition" id="starea_vremii"></p>
-
-        <div class="wind">
-
-            💨 Viteza vântului: <strong id="viteza_vant"></strong> km/h
-        </div>
+      {% if eroare %}
+      <p class="error">{{ eroare }}</p>
+      {% endif %} {% if date %}
+      <h1 class="city">{{ oras|title }}</h1>
+      <div class="weather-icon">⛅</div>
+      <p class="temperature">{{ date.temperatura }}°C</p>
+      <p class="condition">{{ date.starea_vremii|capitalize }}</p>
+      <p class="wind">💨 Viteza vântului: {{ date.viteza_vant }} km/h</p>
+      {% endif %}
     </div>
-</body>
+  </body>
 </html>
