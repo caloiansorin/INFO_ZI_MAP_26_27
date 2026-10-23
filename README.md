@@ -1,16 +1,17 @@
 <!-- Comments are for documenting which parts where last updated -->
 # SimpleWeatherApp: A Simple Solution to a Daily Problem
 
-## Abstract <!-- Nichita, 10:00, 23.10.2026 --/>
+## Abstract <!-- Nichita. 10:32, 23.10.2026, TBU -->
 
 
-Checking current weather can be exhausting when it requires searching through pages of forecasts and information that is not needed when someone just wants a quick local update. SimpleWeatherApp provides an easy-to-access solution, allowing its users to check things such as the temperature in Celsius, real-feel temperature, humidity, wind speed, and a short description of the conditions. SimpleWeatherApp is built with FastAPI which makes it an excellent choice for lower-end devices and allows the user to search for the weather in any city they wish.
+Checking the weather can be inconvenient when it consists of searching through forecasts and data that is simply not needed when someone just wants a quick weather update. SimpleWeatherApp provides an easy-to-use solution, allowing users to check things such as temperature, wind speed, humidity, and other essential data. The app is built on FastAPI, as we prioritize users with lower-end devices. It focuses on presenting a small selection of weather details in a simple interface.
 
-## Introduction <!-- Nichita, 10:00, 23.10.2026 --/>
 
-Weather conditions affect everyday decisions, from choosing the right clothes to planning outings. Although weather services provide a lot of data regarding current conditions, a person who only needs to quickly check the weather for a particular city may prefer a simpler approach. 
+## Introduction <!-- Nichita. 10:10, 23.10.2026 -->
 
-This project provides a simple intuitive way for retrieving and displaying current weather information, as it only displays relevant data such as the temperature, wind speed, and a search bar for looking up the weather by city rather than overstimulating the user with incredible amounts of data scattered everywhere.
+Weather conditions affect everyday decisions, from choosing the right clothes to planning outings. Although weather services provide a lot of data regarding current conditions, a person who only needs to quickly check the weather for a particular city may prefer a simpler approach. This project provides a simple intuitive way for retrieving and displaying current weather information, as it only displays relevant data such as the temperature, wind speed, and a search bar which works with any city in the world rather than overstimulating the user with incredible amounts of data scattered everywhere.
+
+
 
 
 <!--
