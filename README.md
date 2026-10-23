@@ -10,8 +10,6 @@
 
 Aplicația este construită cu **FastAPI** (backend asincron în Python), **httpx** (client HTTP asincron) și o interfață **HTML5 / CSS3 / JavaScript** fără dependențe externe. Datele provin de la **[Open-Meteo](https://open-meteo.com/)**, un serviciu meteo deschis care nu necesită cheie API.
 
-> 📄 Documentația tehnică completă (format Word) se află în `docs/Documentatie_Tehnica_Vremea_Acum.docx`.
-
 ---
 
 ## Cuprins
