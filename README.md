@@ -4,10 +4,13 @@
 
 **SimpleWeatherApp**
 
-Accesul rapid la prognoze meteorologice precise joacă un rol esențial în planificarea activităților cotidiene și în adoptarea unor măsuri preventive împotriva fenomenelor climatice nefavorabile. Prezenta lucrare descrie proiectarea și implementarea aplicației „Simple Weather App”, o platformă web concepută pe principii de uzabilitate și simplitate vizuală, orientată spre interogarea eficientă a stării vremii pentru orice localitate.
-Din punct de vedere arhitectural, soluția adoptă un model client-server decuplat. Modulul de backend este dezvoltat în Python, utilizând framework-ul FastAPI; acesta acționează ca un intermediar securizat între utilizator și serviciul extern OpenWeatherMap, preluând parametrii de căutare, procesând datele preluate prin interfața REST și furnizând răspunsurile în format JSON. În scopul asigurării securității aplicației, cheia API este izolată într-un fișier dedicat de configurare, prevenind expunerea acesteia pe partea de client. Interfața utilizator (frontend-ul) este construită dinamic cu ajutorul tehnologiilor standard HTML, CSS și JavaScript nativ, actualizând indicatorii meteorologici principali (temperatură, umiditate, viteza vântului) în mod asincron, fără reîncărcarea paginii. Totodată, sistemul include un mecanism coerent de interceptare și afișare a erorilor.
-Rezultatul obținut este o platformă stabilă, ergonomică și scalabilă, ce creează premisele integrării unor funcționalități avansate, precum avertizările de vreme severă în timp real, hărțile radar interactive sau profilurile personalizate de utilizator.
-Cuvinte-cheie: prognoză meteo, arhitectură client-server, integrare API, FastAPI, Python, dezvoltare web, JavaScript asincron.
+SimpleWeatherApp este o aplicație web mică, construită pentru un caz de utilizare concret: utilizatorul introduce numele unei localități, iar pagina afișează condițiile meteo curente primite de la OpenWeatherMap. Proiectul nu încearcă să înlocuiască o platformă meteorologică complexă. Valoarea lui constă în traseul complet și ușor de urmărit dintre formularul din browser, serverul local și serviciul extern.
+
+Serverul este scris în Python cu FastAPI. El primește numele orașului, atașează cheia API păstrată în configurația locală, trimite cererea către OpenWeatherMap și selectează numai datele de care interfața are nevoie. Browserul nu primește cheia și nu trebuie să cunoască structura completă a răspunsului extern. În partea de client sunt folosite HTML, CSS și JavaScript fără framework. După fiecare răspuns, pagina actualizează cardul meteo fără reîncărcare.
+
+Versiunea documentată aici afișează numele localității, temperatura, descrierea vremii, pictograma și viteza vântului. Ea tratează separat localitățile inexistente, problemele de rețea și răspunsurile neașteptate ale serviciului extern. Documentația descrie implementarea existentă, nu o funcționalitate ipotetică.
+
+Cuvinte-cheie: SimpleWeatherApp, vreme curentă, FastAPI, OpenWeatherMap, API REST, JavaScript, interfață web.
 
 ## 2. Descriere
 
@@ -558,5 +561,18 @@ Numele complete, rolurile si contributiile individuale trebuie completate inaint
 Repository-ul nu contine in prezent un fisier `LICENSE` si nu declara o licenta open-source explicita. Pana la alegerea unei licente de catre autori, codul trebuie considerat material educational al proiectului si nu trebuie redistribuit sau reutilizat comercial fara acordul autorilor.
 
 Daca autorii doresc publicarea proiectului, trebuie aleasa o licenta si adaugat fisierul oficial `LICENSE`. Licenta MIT este o optiune permisiva, dar alegerea trebuie facuta de titularii drepturilor. Dupa alegere, aceasta sectiune trebuie actualizata cu numele titularilor si anul aplicabil.
+
+### 12.1 Surse si atribuiri
+
+Implementarea si textul acestei documentatii trebuie verificate si completate de autorii proiectului. Serviciile si bibliotecile externe sunt mentionate pentru transparenta:
+
+- datele meteorologice sunt furnizate de [OpenWeatherMap](https://openweathermap.org/);
+- pictogramele sunt incarcate prin serviciul de iconite OpenWeatherMap;
+- framework-ul backend este [FastAPI](https://fastapi.tiangolo.com/);
+- serverul ASGI este [Uvicorn](https://www.uvicorn.org/);
+- clientul HTTP este [HTTPX](https://www.python-httpx.org/);
+- incarcarea configurarii locale foloseste [python-dotenv](https://pypi.org/project/python-dotenv/).
+
+Descrierile din README trebuie pastrate in acord cu fisierele sursa. Fragmentele, imaginile sau textele preluate din documentatia altor proiecte trebuie marcate explicit si insotite de sursa lor, nu prezentate ca realizari originale ale echipei.
 
 Documentatia descrie versiunea curenta a proiectului. Orice functie adaugata ulterior trebuie reflectata in sectiunile de functionalitati, arhitectura, instalare, testare, limitari si dezvoltari viitoare.
