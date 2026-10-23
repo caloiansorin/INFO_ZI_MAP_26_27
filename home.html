@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Aplicație Meteo</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #bfdbfe, #eff6ff);
+        }
+
+        .weather-card {
+            width: 350px;
+            max-width: 100%;
+            padding: 30px 25px;
+            border-radius: 28px;
+            background: white;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(30, 64, 175, 0.15);
+        }
+
+        .city {
+            font-size: 27px;
+            color: #1e293b;
+            margin: 0 0 20px;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px;
+            background: #f1f5f9;
+            border-radius: 30px;
+        }
+
+        .search input {
+            width: 100%;
+            min-width: 0;
+            padding: 11px 12px;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 15px;
+        }
+
+        .search button {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: #3b82f6;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .search button:hover {
+            background: #1d4ed8;
+        }
+
+        .suggestions {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            max-height: 220px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.18);
+            z-index: 100;
+            text-align: left;
+        }
+
+        .suggestions:empty {
+            display: none;
+        }
+
+        .suggestion {
+            padding: 12px 15px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #1e293b;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .suggestion:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion:hover,
+        .suggestion:focus {
+            background: #dbeafe;
+            outline: none;
+        }
+
+        .suggestion small {
+            display: block;
+            margin-top: 3px;
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .weather-icon {
+            font-size: 80px;
+            margin: 8px 0;
+        }
+
+        .temperature {
+            margin: 0;
+            font-size: 68px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .condition {
+            margin: 12px 0 25px;
+            font-size: 17px;
+            color: #64748b;
+        }
+
+        .coordinates {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 18px;
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.9;
+        }
+
+        .coordinates strong {
+            color: #1e293b;
+        }
+
+        .message {
+            min-height: 18px;
+            margin: 15px 0 0;
+            color: #dc2626;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="weather-card">
+
+        <h1 class="city" id="nume-oras">Bacău</h1>
+
+        <div class="search-container">
+            <form class="search" id="formular">
+                <input
+                    id="oras"
+                    type="text"
+                    placeholder="Caută un oraș din România..."
+                    value="Bacau"
+                    aria-label="Numele orașului din România"
+                    autocomplete="off"
+                    required
+                >
+
+                <button type="submit" aria-label="Caută orașul">
+                    🔍
+                </button>
+            </form>
+
+            <div class="suggestions" id="sugestii" role="listbox"></div>
+        </div>
+
+        <div class="weather-icon" id="pictograma">🌤️</div>
+
+        <p class="temperature" id="temperatura">--°</p>
+
+        <p class="condition" id="descriere">
+            Se încarcă vremea...
+        </p>
+
+        <div class="coordinates">
+            <div>
+                📍 Latitudine:
+                <strong id="lat">--</strong>
+            </div>
+
+            <div>
+                🌐 Longitudine:
+                <strong id="long">--</strong>
+            </div>
+        </div>
+
+        <p class="message" id="mesaj" role="status"></p>
+
+    </main>
+
+    <script>
+        function alegePictograma(conditie) {
+            const pictograme = {
+                Clear: "☀️",
+                Clouds: "☁️",
+                Rain: "🌧️",
+                Drizzle: "🌦️",
+                Thunderstorm: "⛈️",
+                Snow: "❄️",
+                Mist: "🌫️",
+                Fog: "🌫️",
+                Haze: "🌫️",
+                Smoke: "🌫️",
+                Dust: "🌫️",
+                Sand: "🌫️",
+                Ash: "🌋",
+                Squall: "💨",
+                Tornado: "🌪️"
+            };
+
+            return pictograme[conditie] || "🌤️";
+        }
+
+        const inputOras = document.getElementById("oras");
+        const listaSugestii = document.getElementById("sugestii");
+        const mesaj = document.getElementById("mesaj");
+
+        let cerereSugestii = 0;
+        let cerereVreme = 0;
+        let temporizatorSugestii;
+
+        function normalizeazaText(text) {
+            return text
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLocaleLowerCase("ro")
+                .trim();
+        }
+
+        async function cautaSugestii(text) {
+            const idCerere = ++cerereSugestii;
+            const prefix = normalizeazaText(text);
+
+            listaSugestii.replaceChildren();
+
+            if (!prefix) {
+                return;
+            }
+
+            try {
+                const raspuns = await fetch(
+                    "/sugestii?oras=" + encodeURIComponent(text)
+                );
+
+                if (!raspuns.ok) {
+                    return;
+                }
+
+                const rezultate = await raspuns.json();
+
+                if (
+                    idCerere !== cerereSugestii ||
+                    normalizeazaText(inputOras.value) !== prefix
+                ) {
+                    return;
+                }
+
+                const fragment = document.createDocumentFragment();
+
+                rezultate.forEach(locatie => {
+                    if (
+                        !normalizeazaText(locatie.nume).startsWith(prefix)
+                    ) {
+                        return;
+                    }
+
+                    const element = document.createElement("div");
+                    element.className = "suggestion";
+                    element.setAttribute("role", "option");
+                    element.tabIndex = 0;
+
+                    element.appendChild(
+                        document.createTextNode(locatie.nume)
+                    );
+
+                    const detalii = document.createElement("small");
+                    detalii.textContent = locatie.state
+                        ? locatie.state + " · România"
+                        : "România";
+
+                    element.appendChild(detalii);
+
+                    function selecteazaOras() {
+                        inputOras.value = locatie.nume;
+                        listaSugestii.replaceChildren();
+                        afiseazaVreme(locatie.nume);
+                    }
+
+                    element.addEventListener("click", selecteazaOras);
+
+                    element.addEventListener("keydown", function(event) {
+                        if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            selecteazaOras();
+                        }
+                    });
+
+                    fragment.appendChild(element);
+                });
+
+                listaSugestii.appendChild(fragment);
+
+            } catch (eroare) {
+                if (idCerere === cerereSugestii) {
+                    listaSugestii.replaceChildren();
+                }
+            }
+        }
+
+        inputOras.addEventListener("input", function() {
+            clearTimeout(temporizatorSugestii);
+
+            const text = inputOras.value.trim();
+
+            if (!text) {
+                cerereSugestii++;
+                listaSugestii.replaceChildren();
+                return;
+            }
+
+            temporizatorSugestii = setTimeout(function() {
+                cautaSugestii(text);
+            }, 150);
+        });
+
+        document.addEventListener("click", function(event) {
+            if (!event.target.closest(".search-container")) {
+                listaSugestii.replaceChildren();
+            }
+        });
+
+        async function afiseazaVreme(oras) {
+            const idCerere = ++cerereVreme;
+
+            mesaj.textContent = "Se încarcă...";
+            listaSugestii.replaceChildren();
+
+            try {
+                const raspuns = await fetch(
+                    "/mesaj?oras=" + encodeURIComponent(oras)
+                );
+
+                const date = await raspuns.json();
+
+                if (idCerere !== cerereVreme) {
+                    return;
+                }
+
+                if (!raspuns.ok) {
+                    throw new Error(
+                        date.detail || "Nu am găsit orașul în România."
+                    );
+                }
+
+                document.getElementById("nume-oras").textContent =
+                    date.oras +
+                    (date.tara ? ", " + date.tara : "");
+
+                document.getElementById("temperatura").textContent =
+                    date.temperatura + "°C";
+
+                document.getElementById("descriere").textContent =
+                    date.descriere;
+
+                document.getElementById("pictograma").textContent =
+                    alegePictograma(date.conditie);
+
+                document.getElementById("lat").textContent =
+                    Number(date.lat).toFixed(4);
+
+                document.getElementById("long").textContent =
+                    Number(date.long).toFixed(4);
+
+                mesaj.textContent = "";
+
+            } catch (eroare) {
+                if (idCerere === cerereVreme) {
+                    mesaj.textContent =
+                        eroare.message || "A apărut o eroare.";
+                }
+            }
+        }
+
+        document.getElementById("formular")
+            .addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                const oras = inputOras.value.trim();
+
+                if (oras) {
+                    cerereSugestii++;
+                    listaSugestii.replaceChildren();
+                    afiseazaVreme(oras);
+                }
+            });
+
+        afiseazaVreme("Bacau");
+    </script>
+
+</body>
+</html>
