@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -65,33 +64,67 @@
 </head>
 
 <body>
-<script>
-        async function afiseazaMesaj() {
-            const raspuns = await fetch("/mesaj");
-            const date = await raspuns.json();
-
-            document.getElementById("starea_vremii").innerText =
-                date.starea_vremii[0];
-            document.getElementById("temperatura").innerText =
-                date.starea_vremii[1];
-            document.getElementById("viteza_vant").innerText =
-                date.starea_vremii[2];
-        }
-        document.addEventListener("DOMContentLoaded", afiseazaMesaj);
-    </script>
     <div class="weather-card">
-        <h1 class="city">Bacău</h1>
+
+        <form method="POST" action="/submit"
+      style="max-width: 400px; margin: 50px auto; padding: 30px;
+             background: #ffffff; border-radius: 12px;
+             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+             font-family: Arial, sans-serif;">
+
+    <input type="text" name="oras"
+           placeholder="Introdu orașul..."
+           style="width: 100%; padding: 12px; margin-bottom: 20px;
+                  border: 1px solid #ccc; border-radius: 6px;
+                  font-size: 16px; box-sizing: border-box;">
+    <button type="submit"
+            style="width: 100%; padding: 12px;
+                   background: #2563eb; color: white;
+                   border: none; border-radius: 6px;
+                   font-size: 16px; font-weight: bold;
+                   cursor: pointer;">
+        Afișează starea vremii
+    </button>
+</form>
+        <h1 class="city">{{oras}}</h1>
 
         <div class="weather-icon">⛅</div>
 
-        <p class="temperature" id="temperatura"></p>
+        <p class="temperature" id="temperatura">{{temperatura}}</p>
 
-        <p class="condition" id="starea_vremii"></p>
+        <p class="condition" id="starea_vremii">{{vreme}}</p>
 
         <div class="wind">
-
-            💨 Viteza vântului: <strong id="viteza_vant"></strong> km/h
+            💨 Viteza vântului: <strong>{{viteza_vant}}</strong> km/h
         </div>
+        <h1>{{text}}</h1>
+        <h2>{{ceva}}</h2>
+
+
+
+        <!----------------->
+        <form method="POST" action="/ceva"
+      style="max-width: 400px; margin: 50px auto; padding: 30px;
+             background: #ffffff; border-radius: 12px;
+             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+             font-family: Arial, sans-serif;">
+
+    <input type="text" id="ceva" name="ceva" required
+           placeholder="Introdu ceva"
+           style="width: 100%; padding: 12px; margin-bottom: 20px;
+                  border: 1px solid #ccc; border-radius: 6px;
+                  font-size: 16px; box-sizing: border-box;">
+    <button type="submit"
+            style="width: 100%; padding: 12px;
+                   background: #2563eb; color: white;
+                   border: none; border-radius: 6px;
+                   font-size: 16px; font-weight: bold;
+                   cursor: pointer;">
+        Afiseaza ceva:
+    </button>
+</form>
+
+
     </div>
 </body>
 </html>
