@@ -1,2 +1,4 @@
-#Fisierele care trebuie excluse din incarcare
 .env
+.venv/
+__pycache__/
+.idea/

@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicație Meteo</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #dbeafe, #eff6ff);
+        }
+
+        .weather-card {
+            width: 340px;
+            max-width: calc(100% - 32px);
+            padding: 36px 28px;
+            border-radius: 24px;
+            background: white;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(30, 64, 175, 0.12);
+        }
+
+        .city {
+            margin: 0;
+            font-size: 28px;
+            color: #1e293b;
+        }
+
+        .weather-icon {
+            font-size: 64px;
+            margin: 22px 0 8px;
+        }
+
+        .temperature {
+            font-size: 64px;
+            font-weight: bold;
+            color: #2563eb;
+            margin: 0;
+        }
+
+        .condition {
+            color: #64748b;
+            font-size: 18px;
+            margin: 12px 0 26px;
+        }
+
+        .wind {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 22px;
+            color: #334155;
+            font-size: 16px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weather-card">
+
+        <form method="POST" action="/submit"
+      style="max-width: 400px; margin: 50px auto; padding: 30px;
+             background: #ffffff; border-radius: 12px;
+             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+             font-family: Arial, sans-serif;">
+
+    <input type="text" name="oras"
+           placeholder="Introdu orașul..."
+           style="width: 100%; padding: 12px; margin-bottom: 20px;
+                  border: 1px solid #ccc; border-radius: 6px;
+                  font-size: 16px; box-sizing: border-box;">
+    <button type="submit"
+            style="width: 100%; padding: 12px;
+                   background: #2563eb; color: white;
+                   border: none; border-radius: 6px;
+                   font-size: 16px; font-weight: bold;
+                   cursor: pointer;">
+        Afișează starea vremii
+    </button>
+</form>
+        <h1 class="city">{{oras}}</h1>
+
+        <div class="weather-icon">⛅</div>
+
+        <p class="temperature" id="temperatura">{{temperatura}}</p>
+
+        <p class="condition" id="starea_vremii">{{vreme}}</p>
+
+        <div class="wind">
+            💨 Viteza vântului: <strong>{{viteza_vant}}</strong> km/h
+        </div>
+        <h1>{{text}}</h1>
+        <h2>{{ceva}}</h2>
+
+
+
+        <!----------------->
+        <form method="POST" action="/ceva"
+      style="max-width: 400px; margin: 50px auto; padding: 30px;
+             background: #ffffff; border-radius: 12px;
+             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+             font-family: Arial, sans-serif;">
+
+    <input type="text" id="ceva" name="ceva" required
+           placeholder="Introdu ceva"
+           style="width: 100%; padding: 12px; margin-bottom: 20px;
+                  border: 1px solid #ccc; border-radius: 6px;
+                  font-size: 16px; box-sizing: border-box;">
+    <button type="submit"
+            style="width: 100%; padding: 12px;
+                   background: #2563eb; color: white;
+                   border: none; border-radius: 6px;
+                   font-size: 16px; font-weight: bold;
+                   cursor: pointer;">
+        Afiseaza ceva:
+    </button>
+</form>
+
+
+    </div>
+</body>
+</html>
