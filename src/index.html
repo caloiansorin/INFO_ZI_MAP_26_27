@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aplicație Meteo</title>
+    <link rel="stylesheet" href="/src/index.css" />
+  </head>
+  <body>
+    <form
+      class="search-box"
+      onsubmit="
+        event.preventDefault();
+        cautaVreme();
+      "
+    >
+      <input
+        type="text"
+        id="oras_input"
+        placeholder="Caută un oraș (ex: Iași, Cluj)..."
+        autofocus
+      />
+      <button type="submit">Caută</button>
+    </form>
+
+    <div class="weather-card">
+      <h1 class="city" id="nume_oras">--</h1>
+      <img
+        id="iconita_vreme"
+        class="weather-icon-img"
+        src=""
+        alt="Iconiță meteo"
+        style="display: none"
+      />
+      <p class="temperature"><span id="temperatura">--</span>°C</p>
+      <p class="condition" id="starea_vremii">Se încarcă...</p>
+      <div class="wind">💨 Vânt: <strong id="viteza_vant">--</strong> km/h</div>
+      <p class="error-msg" id="eroare">Orașul nu a fost găsit!</p>
+    </div>
+
+    <script>
+      let orasCurent = ""; // Nu mai setăm niciun oraș hardcodat aici
+      const $ = (id) => document.getElementById(id);
+      const ui = {
+        oras: $("nume_oras"),
+        temp: $("temperatura"),
+        stare: $("starea_vremii"),
+        vant: $("viteza_vant"),
+        icon: $("iconita_vreme"),
+        eroare: $("eroare"),
+        input: $("oras_input"),
+      };
+
+      async function incarcaVreme(oras = null) {
+        ui.eroare.style.display = "none";
+
+        try {
+          // Dacă 'oras' nu e transmis, apelăm doar /mesaj, iar backend-ul își ia variabila proprie
+          const url = oras
+            ? `/mesaj?oras=${encodeURIComponent(oras)}`
+            : `/mesaj`;
+          const res = await fetch(url);
+          if (!res.ok) throw new Error("Orașul nu a fost găsit!");
+
+          const d = await res.json();
+          ui.oras.innerText = d.oras;
+          ui.temp.innerText = d.temperatura;
+          ui.stare.innerText = d.starea_vremii;
+          ui.vant.innerText = d.viteza_vant;
+          ui.icon.src = `https://openweathermap.org/img/wn/${d.iconita}@2x.png`;
+          ui.icon.style.display = "block";
+
+          // Salvăm orașul venit din backend
+          orasCurent = d.oras;
+        } catch (err) {
+          ui.eroare.innerText = err.message;
+          ui.eroare.style.display = "block";
+        }
+      }
+
+      function cautaVreme() {
+        const oras = ui.input.value.trim();
+        if (oras) incarcaVreme(oras);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        // La pornire se apelează fără parametri -> backend-ul dă orașul său prestabilit
+        incarcaVreme();
+        setInterval(
+          () => {
+            if (orasCurent) incarcaVreme(orasCurent);
+          },
+          10 * 60 * 1000,
+        );
+      });
+    </script>
+  </body>
+</html>

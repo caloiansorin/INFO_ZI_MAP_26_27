@@ -1,1 +1,2 @@
-# Va URMA
+#HOW TO RUN:
+```uvicorn main:app --reload```

@@ -1,0 +1,233 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-family:
+    "Plus Jakarta Sans",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  /* Fundal vibrant în nuanțe cerești cu lumini ambientale */
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(96, 165, 250, 0.45) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(147, 197, 253, 0.5) 0%,
+      transparent 40%
+    ),
+    linear-gradient(145deg, #e0f2fe 0%, #dbeafe 50%, #eff6ff 100%);
+  gap: 24px;
+  padding: 24px 16px;
+  color: #0f172a;
+}
+
+/* ==================== BARA DE CĂUTARE ==================== */
+.search-box {
+  display: flex;
+  gap: 10px;
+  width: 380px;
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 6px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow:
+    0 10px 25px -5px rgba(37, 99, 235, 0.08),
+    0 8px 10px -6px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-box:focus-within {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 16px 32px -4px rgba(37, 99, 235, 0.16),
+    0 0 0 2px #3b82f6;
+  transform: translateY(-2px);
+}
+
+.search-box input {
+  flex: 1;
+  padding: 12px 18px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e293b;
+  outline: none;
+}
+
+.search-box input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.search-box button {
+  padding: 12px 22px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #ffffff;
+  border: none;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.search-box button:hover {
+  background: linear-gradient(135deg, #1d4ed8, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+}
+
+.search-box button:active {
+  transform: translateY(1px);
+}
+
+/* ==================== CARDUL METEO ==================== */
+.weather-card {
+  width: 380px;
+  max-width: 100%;
+  padding: 40px 32px 34px;
+  border-radius: 32px;
+  /* Efect Glassmorphism */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  text-align: center;
+  box-shadow:
+    0 25px 50px -12px rgba(30, 58, 138, 0.15),
+    0 10px 20px -8px rgba(30, 58, 138, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.weather-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 30px 60px -12px rgba(30, 58, 138, 0.2),
+    0 12px 24px -8px rgba(30, 58, 138, 0.08);
+}
+
+/* Numele orașului */
+.city {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.5px;
+}
+
+/* Iconița meteo plutitoare */
+.weather-icon-img {
+  width: 110px;
+  height: 110px;
+  margin: 6px auto;
+  display: block;
+  filter: drop-shadow(0 12px 16px rgba(37, 99, 235, 0.2));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Temperatura */
+.temperature {
+  font-size: 68px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -2px;
+  background: linear-gradient(145deg, #1e3a8a 20%, #2563eb 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 12px 0 6px;
+}
+
+/* Descrierea stării vremii */
+.condition {
+  color: #64748b;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 26px;
+  text-transform: capitalize;
+}
+
+/* Informațiile despre vânt */
+.wind {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 20px;
+  background: rgba(241, 245, 249, 0.7);
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  color: #475569;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.wind strong {
+  color: #0f172a;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+/* Mesajul de eroare */
+.error-msg {
+  color: #e11d48;
+  background: #ffe4e6;
+  border: 1px solid #fecdd3;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 16px;
+  display: none;
+  animation: shake 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  75% {
+    transform: translateX(4px);
+  }
+}
