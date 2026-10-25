@@ -1,188 +1,164 @@
-Documentație tehnică – Aplicație Meteo
-1. Titlul proiectului
+# Documentație tehnică – Aplicație Meteo
 
-Aplicație Meteo – Interfață web pentru afișarea informațiilor meteorologice
+## 1. Titlul proiectului
 
-2. Descriere
+**Aplicație Meteo – Interfață web pentru afișarea informațiilor meteorologice**
+
+## 2. Descriere
 
 Aplicația Meteo este o aplicație web care permite utilizatorului să introducă numele unui oraș și să vizualizeze informații despre starea vremii. Interfața este concepută pentru a afișa numele orașului, temperatura, condițiile meteorologice și viteza vântului.
 
 Aplicația conține, de asemenea, un formular suplimentar prin care utilizatorul poate introduce o valoare personalizată. Interfața este realizată în HTML și CSS, iar datele meteorologice sunt furnizate de un backend dezvoltat în Python utilizând framework-ul FastAPI și afișate prin intermediul unor șabloane HTML dinamice.
 
-3. Funcționalități
+## 3. Funcționalități
 
 Aplicația include următoarele funcționalități:
 
-Introducerea numelui unui oraș prin intermediul unui formular.
-Trimiterea numelui orașului către ruta /submit, utilizând metoda HTTP POST.
-Afișarea numelui orașului selectat.
-Afișarea temperaturii și a descrierii condițiilor meteorologice.
-Prezentarea vitezei vântului, exprimată în kilometri pe oră.
-Afișarea unor elemente vizuale sugestive pentru vreme, precum simbolul meteorologic și pictograma vântului.
-Introducerea și transmiterea unei valori suplimentare prin formularul asociat rutei /ceva.
-Utilizarea unor variabile dinamice pentru afișarea datelor primite de la server.
-4. Tehnologii
+1. Introducerea numelui unui oraș prin intermediul unui formular.
+2. Trimiterea numelui orașului către ruta `/submit`, utilizând metoda HTTP POST.
+3. Afișarea numelui orașului selectat.
+4. Afișarea temperaturii și a descrierii condițiilor meteorologice.
+5. Prezentarea vitezei vântului, exprimată în kilometri pe oră.
+6. Afișarea unor elemente vizuale sugestive pentru vreme, precum simbolul meteorologic și pictograma vântului.
+7. Introducerea și transmiterea unei valori suplimentare prin formularul asociat rutei `/ceva`.
+8. Utilizarea unor variabile dinamice pentru afișarea datelor primite de la server.
+
+## 4. Tehnologii
 
 Proiectul utilizează următoarele tehnologii:
 
-Python – limbaj de programare utilizat pentru implementarea logicii aplicației, procesarea cererilor HTTP și integrarea cu servicii externe de furnizare a datelor meteorologice.
+- **Python** – limbaj de programare utilizat pentru implementarea logicii aplicației, procesarea cererilor HTTP și integrarea cu servicii externe de furnizare a datelor meteorologice.
+- **FastAPI** – framework web modern utilizat pentru dezvoltarea backend-ului și gestionarea endpoint-urilor aplicației.
+- **HTML5** – pentru structurarea paginii web și definirea formularelor.
+- **CSS3** – pentru stilizarea și organizarea aspectului vizual.
+- **Jinja2** – motor de șabloane utilizat pentru afișarea dinamică a datelor furnizate de server.
+- **HTTP/HTTPS** – protocol utilizat pentru comunicarea dintre client și server.
 
-FastAPI – framework web modern pentru Python, utilizat pentru dezvoltarea backend-ului și gestionarea endpoint-urilor aplicației, oferind performanță ridicată și suport pentru validarea datelor și documentarea automată a API-urilor.
-
-HTML5 – pentru structurarea paginii web, definirea formularelor și organizarea elementelor de conținut.
-
-CSS3 – pentru stilizarea interfeței, culori, spațiere, colțuri rotunjite, umbre și alinierea elementelor.
-
-Template-uri HTML (Jinja2) – variabilele precum {{oras}}, {{temperatura}}, {{vreme}} și {{viteza_vant}} permit introducerea dinamică a datelor furnizate de server în interfața utilizator.
-
-HTTP/HTTPS – protocol utilizat pentru transmiterea datelor între client și server.
-
-5. Arhitectură
+## 5. Arhitectură
 
 Aplicația este implementată conform unei arhitecturi client-server bazate pe tehnologii web moderne. Componenta frontend realizează interacțiunea cu utilizatorul, iar backend-ul dezvoltat în Python FastAPI procesează cererile și furnizează datele necesare afișării informațiilor meteorologice.
 
-Componente principale
-Frontend (HTML/CSS) – interfața utilizatorului și formularele de introducere a datelor.
-Backend FastAPI – gestionează rutele aplicației (/submit, /ceva), procesează cererile utilizatorului și pregătește datele pentru afișare.
-Motor de șabloane Jinja2 – generează dinamic paginile HTML pe baza datelor furnizate de backend.
-Serviciu extern de date meteorologice (API meteo) – furnizează informațiile meteorologice utilizate de aplicație.
-Browser client – afișează rezultatele și permite interacțiunea cu sistemul.
-Schema arhitecturală
-Plain Text
-┌─────────────────────┐
-│ Browser Client │
-│ Utilizator │
-└──────────┬──────────┘
-│ HTTP Request
-▼
-┌─────────────────────┐
+### Componente principale
+
+1. **Frontend (HTML/CSS)** – interfața utilizatorului și formularele de introducere a datelor.
+2. **Backend FastAPI** – gestionează rutele aplicației (`/submit`, `/ceva`) și procesează cererile utilizatorului.
+3. **Motor de șabloane Jinja2** – generează dinamic paginile HTML.
+4. **Serviciu extern de date meteorologice** – furnizează informațiile meteorologice aplicației.
+5. **Browser Client** – afișează rezultatele și permite interacțiunea cu aplicația.
+
+### Schema arhitecturală
+
+```text
+┌───────────────────┐
+│    Utilizator     │
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│  Browser Client   │
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
 │ Frontend HTML/CSS │
-│ Formulare │
-└──────────┬──────────┘
-│
-▼
-┌─────────────────────┐
-│ Python FastAPI │
-│ Backend │
-└───────┬───────┬─────┘
-│ │
-│ ▼
-│ ┌─────────────┐
-│ │ Jinja2 │
-│ │ Templates │
-│ └──────┬──────┘
-│ │
-▼ │
-┌─────────────────────┐
-│ API Meteo Extern │
-└─────────────────────┘
-│
-▼
-Date procesate și
-afișate utilizatorului
-Flux operațional
-Utilizatorul introduce numele unui oraș în interfața web.
-Formularul transmite cererea către endpoint-ul FastAPI prin metoda HTTP POST.
-Backend-ul procesează cererea și interoghează serviciul meteorologic extern.
-Datele obținute sunt transmise către șablonul Jinja2.
-Pagina HTML este generată dinamic și returnată browserului.
-Utilizatorul vizualizează informațiile meteorologice actualizate.
+└─────────┬─────────┘
+          │
+          ▼
+┌───────────────────┐
+│ Python + FastAPI  │
+│      Backend      │
+└──────┬─────┬──────┘
+       │     │
+       ▼     ▼
+┌─────────┐ ┌──────────────┐
+│ Jinja2  │ │ OpenWeather  │
+│Template │ │     API      │
+└─────────┘ └──────────────┘
+```
 
-Această arhitectură asigură o separare clară între stratul de prezentare, logica aplicației și sursa de date, facilitând mentenanța, scalabilitatea și extinderea ulterioară a sistemului.
+### Flux operațional
 
-6. Instalare
+1. Utilizatorul introduce numele unui oraș în interfața web.
+2. Formularul transmite cererea către endpoint-ul FastAPI prin metoda HTTP POST.
+3. Backend-ul procesează cererea și interoghează serviciul meteorologic extern.
+4. Datele obținute sunt transmise către șablonul Jinja2.
+5. Pagina HTML este generată dinamic și returnată browserului.
+6. Utilizatorul vizualizează informațiile meteorologice actualizate.
 
-Pentru vizualizarea și rularea aplicației sunt necesare un editor de cod, precum Visual Studio Code, și un browser web modern.
+Această arhitectură asigură separarea componentelor de prezentare, procesare și furnizare a datelor, facilitând mentenanța și dezvoltarea ulterioară a aplicației.
 
-Pașii de instalare și pornire sunt:
+## 6. Instalare
 
-Se salvează fișierele proiectului într-un director local.
-Se deschide proiectul într-un editor de cod pentru verificare și modificare.
-Se instalează dependențele necesare aplicației Python:
-Shell
+Pentru rularea aplicației sunt necesare Visual Studio Code, Python și un browser web modern.
+
+### Pași de instalare
+
+1. Se descarcă sau se clonează proiectul.
+2. Se deschide proiectul în Visual Studio Code.
+3. Se instalează dependențele necesare:
+
+```bash
 pip install fastapi uvicorn jinja2
-Se pornește serverul FastAPI utilizând comanda:
-Shell
+```
+
+4. Se pornește serverul:
+
+```bash
 uvicorn main:app --reload
-Aplicația poate fi accesată prin browser la adresa configurată de serverul FastAPI.
+```
 
-Deschiderea directă a fișierului HTML nu este suficientă pentru funcționarea completă a formularelor și a afișării datelor dinamice, deoarece acestea depind de procesarea realizată de backend.
+5. Aplicația poate fi accesată prin browser la adresa indicată de server.
 
-7. Utilizare
+## 7. Utilizare
 
-Utilizarea aplicației presupune următorii pași:
+1. Utilizatorul accesează aplicația prin intermediul browserului.
+2. Introduce numele orașului pentru care dorește informații meteorologice.
+3. Apasă butonul „Afișează starea vremii”.
+4. Cererea este transmisă către ruta `/submit`.
+5. Backend-ul procesează cererea și obține datele meteo.
+6. Informațiile sunt afișate în interfață.
+7. Formularul secundar permite transmiterea unei valori către ruta `/ceva`.
 
-Utilizatorul accesează pagina aplicației prin intermediul browserului.
-În primul formular, introduce numele orașului pentru care dorește să consulte informațiile meteorologice.
-Apasă butonul „Afișează starea vremii”.
-Cererea este trimisă către server prin ruta /submit.
-După procesarea cererii, interfața afișează numele orașului, temperatura, condițiile meteorologice și viteza vântului.
-Formularul suplimentar permite introducerea unei valori și transmiterea acesteia către ruta /ceva.
-8. Testare
+## 8. Testare
 
-Testarea aplicației poate fi realizată prin verificarea aspectului vizual, a formularelor și a comunicării cu serverul.
+Testarea aplicației poate fi realizată prin verificarea interfeței, a formularelor și a comunicării cu serverul.
 
-Testele recomandate sunt:
+### Teste recomandate
 
-Testarea interfeței: verificarea afișării corecte a cardului meteorologic, a titlurilor, a temperaturii și a vitezei vântului.
+1. Testarea interfeței grafice.
+2. Testarea formularului pentru introducerea orașului.
+3. Testarea formularului suplimentar.
+4. Testarea câmpurilor obligatorii.
+5. Testarea afișării dinamice a datelor.
+6. Testarea compatibilității pe diferite dimensiuni ale ecranului.
+7. Testarea endpoint-urilor FastAPI.
+8. Testarea integrării cu API-ul meteorologic.
 
-Testarea formularului pentru oraș: introducerea unui nume de oraș și verificarea transmiterii cererii către /submit.
+## 9. Limitări
 
-Testarea formularului suplimentar: introducerea unei valori și verificarea transmiterii acesteia către /ceva.
+1. Documentația prezintă arhitectura generală a aplicației, fără detalii complete privind implementarea backend-ului.
+2. Nu sunt prezentate mecanisme de autentificare și autorizare.
+3. Variabilele dinamice depind de datele furnizate de server.
+4. Gestionarea erorilor poate fi îmbunătățită.
+5. Funcționalitatea asociată rutei `/ceva` nu este descrisă în detaliu.
+6. Structura CSS poate necesita optimizări pentru aplicații mai complexe.
+7. Nu sunt implementate prognoze pe mai multe zile sau salvarea orașelor favorite.
 
-Testarea câmpului obligatoriu: verificarea comportamentului formularului suplimentar atunci când câmpul este gol.
+## 10. Dezvoltări viitoare
 
-Testarea afișării dinamice: verificarea înlocuirii variabilelor de șablon cu valorile furnizate de server.
+1. Implementarea unei prognoze meteo extinse.
+2. Afișarea umidității, presiunii atmosferice și temperaturii resimțite.
+3. Îmbunătățirea validării datelor introduse.
+4. Optimizarea interfeței pentru dispozitive mobile.
+5. Adăugarea de teste automate pentru frontend și backend.
+6. Salvarea istoricului căutărilor și a orașelor favorite.
+7. Integrarea unor surse suplimentare de date meteorologice.
 
-Testarea aspectului adaptiv: verificarea afișării paginii pe ecrane cu dimensiuni diferite.
+## 11. Autori
 
-Testarea endpoint-urilor FastAPI: verificarea funcționării rutelor /submit și /ceva, precum și a răspunsurilor generate de server pentru diferite valori de intrare.
+**Autor:** Veronica Ipati
 
-Testarea integrării cu API-ul meteo: verificarea obținerii și afișării corecte a datelor meteorologice.
-
-9. Limitări
-
-Versiunea prezentată are următoarele limitări:
-
-Documentația descrie arhitectura generală a aplicației, însă detaliile complete privind implementarea backend-ului și integrarea cu serviciul meteorologic nu sunt prezentate.
-
-Nu sunt specificate mecanismele de autentificare sau protecție împotriva accesului neautorizat.
-
-Variabilele dinamice depind de motorul de șabloane și de valorile furnizate de server.
-
-Nu este inclusă validarea completă a numelui orașului sau tratarea tuturor erorilor de conectare.
-
-Formularul suplimentar transmite o valoare către ruta /ceva, însă scopul și rezultatul acestei operații nu sunt detaliate.
-
-Interfața utilizează stiluri CSS care pot necesita reorganizare pentru proiecte de dimensiuni mai mari.
-
-Nu sunt implementate funcționalități precum prognoza pe mai multe zile, salvarea orașelor favorite sau actualizarea automată a datelor.
-
-10. Dezvoltări viitoare
-
-Proiectul poate fi extins prin implementarea următoarelor funcționalități:
-
-Integrarea unui API meteorologic avansat pentru obținerea datelor actualizate și a prognozelor detaliate.
-
-Adăugarea prognozei meteo pentru următoarele zile.
-
-Afișarea unor informații suplimentare, precum umiditatea, presiunea atmosferică și temperatura resimțită.
-
-Implementarea validării avansate a datelor introduse și a mesajelor de eroare pentru orașe inexistente sau indisponibilitatea serviciului.
-
-Îmbunătățirea designului adaptiv pentru telefoane, tablete și calculatoare.
-
-Separarea completă a componentelor frontend și backend pentru o arhitectură mai modulară.
-
-Adăugarea unor teste automate pentru interfață și pentru endpoint-urile FastAPI.
-
-Implementarea unui mecanism de memorare a orașelor căutate frecvent.
-
-11. Autori
-
-Autor: Ipati Veronica
-
-12. Licență
+## 12. Licență
 
 Aplicația a fost dezvoltată în scop educațional, utilizând atât componente proprii, cât și servicii software furnizate de terți. Funcționalitatea sistemului se bazează pe integrarea tehnologiilor Python, FastAPI, Uvicorn, HTTPX și OpenWeatherMap.
 
