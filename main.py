@@ -42,8 +42,6 @@ def verifica_informatiile (url):
     pagina_html = BeautifulSoup(raspuns_server.text, "html.parser")
     pret = pagina_html.find("p",class_="product-new-price")
     nume_produs = pagina_html.find("h1",class_="page-title")
-    return pret,nume_produs
-
     if pret is None:
         print("PRETUL NU A FOST GASIT")
         return  None
@@ -52,7 +50,7 @@ def verifica_informatiile (url):
     if text_pret is None:
         return None
     text_pret = int(re.sub(r"\D","",text_pret))
-    return text_pret
+    return pret,nume_produs
 
 def salvare_pret(pret):
     conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
@@ -88,8 +86,8 @@ def home(request: Request):
         request=request,
         name="index.html",
         context={
-            "nume_produs": "Memorie RAM G.Skill 96GB",
-            "pret_actual": 1899,
+            "nume_produs": verifica_informatiile(url)[1],
+            "pret_actual": verifica_informatiile(url)[0],
             "numar_verificari": 24
         }
     )
