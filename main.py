@@ -8,6 +8,7 @@ from email.mime.text import MIMEText
 import datetime
 import sqlite3 #pip3 isntall sqlite3
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
@@ -26,6 +27,8 @@ def home(request: Request):
         }
     )
 >>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
+=======
+>>>>>>> 8d9c122f70cd9ddffea3ed98fdef2dd7bc3ca966
 load_dotenv()
 email_expeditor = os.getenv("EMAIL_EXPEDITOR")
 app_password = os.getenv("APP_PASSWORD")
@@ -48,12 +51,18 @@ def verifica_informatiile (url):
     pagina_html = BeautifulSoup(raspuns_server.text, "html.parser")
     pret = pagina_html.find("p",class_="product-new-price")
 <<<<<<< HEAD
+<<<<<<< HEAD
     nume_produs = pagina_html.find("h1",class_="page-title")
     return pret,nume_produs
 
 =======
     nume_produs = (pagina_html.find("h1",class_="page-title")).get_text(strip=True)
 >>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
+=======
+    nume_produs = pagina_html.find("h1",class_="page-title")
+    return pret,nume_produs
+
+>>>>>>> 8d9c122f70cd9ddffea3ed98fdef2dd7bc3ca966
     if pret is None:
         print("PRETUL NU A FOST GASIT")
         return  None
@@ -63,10 +72,14 @@ def verifica_informatiile (url):
         return None
     text_pret = int(re.sub(r"\D","",text_pret))
 <<<<<<< HEAD
+<<<<<<< HEAD
     return text_pret
 =======
     return text_pret,nume_produs
 >>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
+=======
+    return text_pret
+>>>>>>> 8d9c122f70cd9ddffea3ed98fdef2dd7bc3ca966
 
 def salvare_pret(pret):
     conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
@@ -96,6 +109,7 @@ def afiseaza_continut_db():
         print(i)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 salvare_pret(verifica_informatiile(url)[0])
 afiseaza_continut_db()
 =======
@@ -104,4 +118,8 @@ afiseaza_continut_db()
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
 >>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
+=======
+salvare_pret(verifica_informatiile(url)[0])
+afiseaza_continut_db()
+>>>>>>> 8d9c122f70cd9ddffea3ed98fdef2dd7bc3ca966
 
