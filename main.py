@@ -17,9 +17,12 @@ def home(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={}
+        context={
+            "nume_produs": "TEST123",
+            "pret_actual": verifica_informatiile(url)[0],
+            "numar_verificari": 24
+        }
     )
-
 load_dotenv()
 email_expeditor = os.getenv("EMAIL_EXPEDITOR")
 app_password = os.getenv("APP_PASSWORD")
@@ -80,17 +83,7 @@ def afiseaza_continut_db():
         print(i)
 
 
-@app.get("/")
-def home(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="index.html",
-        context={
-            "nume_produs": verifica_informatiile(url)[1],
-            "pret_actual": verifica_informatiile(url)[0],
-            "numar_verificari": 24
-        }
-    )
+
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
 
