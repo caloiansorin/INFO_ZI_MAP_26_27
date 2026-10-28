@@ -22,7 +22,7 @@ def home(request: Request):
         context={
             "nume_produs": verifica_informatiile(url)[1],
             "pret_actual": verifica_informatiile(url)[0],
-            "numar_verificari": 24
+            "timestamp": str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
         }
     )
 >>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
