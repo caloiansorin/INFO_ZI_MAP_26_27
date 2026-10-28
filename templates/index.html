@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Monitorizare preturi</title>
+</head>
+
+<body style="margin:0; padding:30px;
+             background:#0f172a; color:white;
+             font-family:Arial,sans-serif;">
+
+    <main style="max-width:900px; margin:auto;">
+
+        <h1 style="color:#38bdf8;">
+            PriceMonitor
+        </h1>
+
+        <p style="color:#94a3b8;">
+            Monitorizarea preturilor produselor eMAG
+        </p>
+
+        <!-- PRODUS -->
+        <div style="background:#1e293b;
+                    padding:25px;
+                    border-radius:12px;
+                    margin-top:25px;">
+
+            <h2>Memorie RAM G.Skill 96GB DDR5</h2>
+
+            <p style="color:#94a3b8;">
+                Ultimul pret inregistrat
+            </p>
+
+            <h1 style="font-size:40px;
+                       margin:10px 0;">
+                1899 lei
+            </h1>
+
+            <p>Ultima verificare: 28.10.2026</p>
+
+            <a href="https://www.emag.ro/"
+               target="_blank"
+               style="color:#38bdf8;">
+                Vezi produsul pe eMAG
+            </a>
+        </div>
+
+        <!-- STATISTICI -->
+        <div style="display:flex; gap:15px;
+                    flex-wrap:wrap; margin-top:20px;">
+
+            <div style="background:#1e293b;
+                        padding:20px; border-radius:10px;
+                        flex:1; min-width:140px;">
+                <p>Pret minim</p>
+                <h2 style="color:#4ade80;">1799 lei</h2>
+            </div>
+
+            <div style="background:#1e293b;
+                        padding:20px; border-radius:10px;
+                        flex:1; min-width:140px;">
+                <p>Pret maxim</p>
+                <h2 style="color:#f87171;">2199 lei</h2>
+            </div>
+
+            <div style="background:#1e293b;
+                        padding:20px; border-radius:10px;
+                        flex:1; min-width:140px;">
+                <p>Verificari</p>
+                <h2>24</h2>
+            </div>
+        </div>
+
+        <!-- ISTORIC -->
+        <div style="background:#1e293b;
+                    padding:25px; border-radius:12px;
+                    margin-top:20px; overflow-x:auto;">
+
+            <h2>Istoric preturi</h2>
+
+            <table style="width:100%;
+                          border-collapse:collapse;">
+
+                <thead>
+                    <tr style="background:#334155;">
+                        <th style="padding:12px;">ID</th>
+                        <th style="padding:12px;">Pret</th>
+                        <th style="padding:12px;">Data</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr style="text-align:center;
+                               border-bottom:1px solid #475569;">
+                        <td style="padding:12px;">1</td>
+                        <td style="padding:12px;">1899 lei</td>
+                        <td style="padding:12px;">
+                            28/10/2026 15:30
+                        </td>
+                    </tr>
+
+                    <tr style="text-align:center;
+                               border-bottom:1px solid #475569;">
+                        <td style="padding:12px;">2</td>
+                        <td style="padding:12px;">1999 lei</td>
+                        <td style="padding:12px;">
+                            27/10/2026 12:00
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p style="text-align:center;
+                  color:#64748b; margin-top:30px;">
+            PriceMonitor - Python + SQLite
+        </p>
+
+    </main>
+</body>
+</html>
