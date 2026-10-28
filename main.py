@@ -18,7 +18,7 @@ def home(request: Request):
         request=request,
         name="index.html",
         context={
-            "nume_produs": "TEST123",
+            "nume_produs": verifica_informatiile(url)[1],
             "pret_actual": verifica_informatiile(url)[0],
             "numar_verificari": 24
         }
@@ -44,7 +44,7 @@ def verifica_informatiile (url):
     raspuns_server.raise_for_status()
     pagina_html = BeautifulSoup(raspuns_server.text, "html.parser")
     pret = pagina_html.find("p",class_="product-new-price")
-    nume_produs = pagina_html.find("h1",class_="page-title")
+    nume_produs = (pagina_html.find("h1",class_="page-title")).get_text(strip=True)
     if pret is None:
         print("PRETUL NU A FOST GASIT")
         return  None
@@ -53,7 +53,7 @@ def verifica_informatiile (url):
     if text_pret is None:
         return None
     text_pret = int(re.sub(r"\D","",text_pret))
-    return pret,nume_produs
+    return text_pret,nume_produs
 
 def salvare_pret(pret):
     conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
