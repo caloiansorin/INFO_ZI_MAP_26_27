@@ -83,6 +83,7 @@ def salvare_pret(pret):
 
 def afiseaza_continut_db():
     conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    conexiune.row_factory = sqlite3.Row
     cursor = conexiune.cursor()
     cursor.execute("""
     SELECT * FROM pret
