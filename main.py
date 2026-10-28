@@ -10,6 +10,7 @@ import sqlite3 #pip3 isntall sqlite3
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 import uvicorn
+url = "https://www.emag.ro/memorie-ram-g-skill-96gb-ddr5-5600mhz-f5-5600j4040d48gx2-rs5k/pd/DGNTTTYBM/"
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 @app.get("/")
@@ -20,7 +21,8 @@ def home(request: Request):
         context={
             "nume_produs": verifica_informatiile(url)[1],
             "pret_actual": verifica_informatiile(url)[0],
-            "timestamp": str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+            "timestamp": str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
+            "url_produs": url
         }
     )
 load_dotenv()
@@ -37,7 +39,7 @@ def trimite_email(destinatar,subiect,continut):
         email.sendmail(email_expeditor,destinatar,mesaj.as_string())
     return True
 
-url = "https://www.emag.ro/memorie-ram-g-skill-96gb-ddr5-5600mhz-f5-5600j4040d48gx2-rs5k/pd/DGNTTTYBM/"
+
 def verifica_informatiile (url):
     antet_cerere = {"User-Agent":"Mozilla/5.0"}
     raspuns_server= requests.get(url,headers=antet_cerere,timeout=15)
@@ -72,6 +74,7 @@ def salvare_pret(pret):
     conexiune.commit()
     cursor.close()
     print("Informatiile au fost salvate")
+
 def afiseaza_continut_db():
     conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
     cursor = conexiune.cursor()
@@ -81,9 +84,26 @@ def afiseaza_continut_db():
     rezultat = cursor.fetchall()
     for i in rezultat:
         print(i)
+def calculeaza_minim():
+    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    cursor = conexiune.cursor()
+    cursor.execute("""
+                   SELECT MIN(pret) FROM pret
+                   """)
+    rezultat = cursor.fetchall()
+    return rezultat[0][0]
+
+def calculeaza_maxim():
+    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    cursor = conexiune.cursor()
+    cursor.execute("""
+                   SELECT MAX(pret) FROM pret
+                   """)
+    rezultat = cursor.fetchall()
+    return rezultat[0][0]
 
 
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="127.0.0.1", port=8000)
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
-
+print(calculeaza_minim())
