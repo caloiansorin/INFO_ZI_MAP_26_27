@@ -22,7 +22,10 @@ def home(request: Request):
             "nume_produs": verifica_informatiile(url)[1],
             "pret_actual": verifica_informatiile(url)[0],
             "timestamp": str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")),
-            "url_produs": url
+            "url_produs": url,
+            "pret_minim": calculeaza_minim_maxim_numar()[0],
+            "pret_maxim": calculeaza_minim_maxim_numar()[1],
+            "numar_verificari":calculeaza_minim_maxim_numar()[2]
         }
     )
 load_dotenv()
@@ -84,26 +87,19 @@ def afiseaza_continut_db():
     rezultat = cursor.fetchall()
     for i in rezultat:
         print(i)
-def calculeaza_minim():
+def calculeaza_minim_maxim_numar():
     conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
     cursor = conexiune.cursor()
+
     cursor.execute("""
-                   SELECT MIN(pret) FROM pret
-                   """)
-    rezultat = cursor.fetchall()
-    return rezultat[0][0]
+        SELECT MIN(pret), MAX(pret),COUNT(pret) FROM pret
+    """)
 
-def calculeaza_maxim():
-    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
-    cursor = conexiune.cursor()
-    cursor.execute("""
-                   SELECT MAX(pret) FROM pret
-                   """)
-    rezultat = cursor.fetchall()
-    return rezultat[0][0]
+    rezultat = cursor.fetchone()
 
+    conexiune.close()
 
-# if __name__ == "__main__":
-#     uvicorn.run(app, host="127.0.0.1", port=8000)
+    return rezultat[0], rezultat[1], rezultat[2]
 
-print(calculeaza_minim())
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
