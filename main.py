@@ -7,6 +7,25 @@ from dotenv import load_dotenv
 from email.mime.text import MIMEText
 import datetime
 import sqlite3 #pip3 isntall sqlite3
+<<<<<<< HEAD
+=======
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+import uvicorn
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+@app.get("/")
+def home(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={
+            "nume_produs": verifica_informatiile(url)[1],
+            "pret_actual": verifica_informatiile(url)[0],
+            "numar_verificari": 24
+        }
+    )
+>>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
 load_dotenv()
 email_expeditor = os.getenv("EMAIL_EXPEDITOR")
 app_password = os.getenv("APP_PASSWORD")
@@ -28,9 +47,13 @@ def verifica_informatiile (url):
     raspuns_server.raise_for_status()
     pagina_html = BeautifulSoup(raspuns_server.text, "html.parser")
     pret = pagina_html.find("p",class_="product-new-price")
+<<<<<<< HEAD
     nume_produs = pagina_html.find("h1",class_="page-title")
     return pret,nume_produs
 
+=======
+    nume_produs = (pagina_html.find("h1",class_="page-title")).get_text(strip=True)
+>>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
     if pret is None:
         print("PRETUL NU A FOST GASIT")
         return  None
@@ -39,7 +62,11 @@ def verifica_informatiile (url):
     if text_pret is None:
         return None
     text_pret = int(re.sub(r"\D","",text_pret))
+<<<<<<< HEAD
     return text_pret
+=======
+    return text_pret,nume_produs
+>>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
 
 def salvare_pret(pret):
     conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
@@ -68,6 +95,13 @@ def afiseaza_continut_db():
     for i in rezultat:
         print(i)
 
+<<<<<<< HEAD
 salvare_pret(verifica_informatiile(url)[0])
 afiseaza_continut_db()
+=======
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+>>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
 
