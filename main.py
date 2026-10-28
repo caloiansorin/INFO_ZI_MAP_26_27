@@ -1,4 +1,6 @@
 import os
+from pickletools import read_uint1
+
 import requests
 import re
 import smtplib #pip3 install smtplib
@@ -25,7 +27,8 @@ def home(request: Request):
             "url_produs": url,
             "pret_minim": calculeaza_minim_maxim_numar()[0],
             "pret_maxim": calculeaza_minim_maxim_numar()[1],
-            "numar_verificari":calculeaza_minim_maxim_numar()[2]
+            "numar_verificari":calculeaza_minim_maxim_numar()[2],
+            "continut_db": afiseaza_continut_db()
         }
     )
 load_dotenv()
@@ -85,8 +88,10 @@ def afiseaza_continut_db():
     SELECT * FROM pret
     """)
     rezultat = cursor.fetchall()
-    for i in rezultat:
-        print(i)
+    lista = [dict(i) for i in rezultat]
+    conexiune.close()
+    return lista
+
 def calculeaza_minim_maxim_numar():
     conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
     cursor = conexiune.cursor()
