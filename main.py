@@ -7,6 +7,23 @@ from dotenv import load_dotenv
 from email.mime.text import MIMEText
 import datetime
 import sqlite3 #pip3 isntall sqlite3
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+import uvicorn
+app = FastAPI()
+
+templates = Jinja2Templates(directory="templates")
+
+@app.get("/")
+def home(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={}
+    )
+
+
+
 load_dotenv()
 email_expeditor = os.getenv("EMAIL_EXPEDITOR")
 app_password = os.getenv("APP_PASSWORD")
@@ -68,6 +85,8 @@ def afiseaza_continut_db():
     for i in rezultat:
         print(i)
 
-salvare_pret(verifica_informatiile(url)[0])
-afiseaza_continut_db()
+# salvare_pret(verifica_informatiile(url)[0])
+# afiseaza_continut_db()
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
