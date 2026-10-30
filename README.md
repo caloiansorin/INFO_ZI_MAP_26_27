@@ -2,9 +2,13 @@
 
 Aplicație web simplă pentru afișarea vremii curente într-un oraș ales de utilizator.
 
-## 1. Titlul proiectului
+## Abstract
 
-**SimpleWeatherApp — aplicație web pentru consultarea vremii curente**
+SimpleWeatherApp este o aplicație web care permite consultarea vremii curente pentru un oraș introdus de utilizator. Aplicația folosește FastAPI pentru gestionarea cererilor, OpenWeatherMap pentru obținerea datelor și Jinja2 pentru afișarea temperaturii, a descrierii condițiilor meteo și a vitezei vântului. În lipsa unui oraș specificat, este afișată vremea pentru Iași. Proiectul demonstrează integrarea unui serviciu web extern într-o aplicație Python, fără a oferi prognoze pentru zilele următoare.
+
+## 1. Introducere
+
+Accesul rapid la informații meteo actualizate este util în planificarea activităților zilnice. SimpleWeatherApp răspunde acestei nevoi printr-o interfață web simplă, în care utilizatorul poate căuta un oraș și poate consulta câteva date despre vremea din acel moment. Scopul proiectului este realizarea unui flux complet de la introducerea orașului până la preluarea și afișarea datelor furnizate de OpenWeatherMap.
 
 ## 2. Descriere
 
@@ -130,10 +134,14 @@ Posibile îmbunătățiri pentru versiuni viitoare:
 - Adăugarea prognozei pentru zilele următoare și a altor indicatori meteo.
 - Mutarea dependențelor într-un fișier `requirements.txt` pentru instalare mai ușoară.
 
-## 11. Autori
+SimpleWeatherApp oferă o modalitate directă de a consulta vremea curentă pentru orașe diferite, combinând FastAPI, șabloane Jinja2 și serviciul OpenWeatherMap. Funcționalitățile de bază sunt implementate, însă proiectul poate fi îmbunătățit prin tratarea erorilor, corectarea unității pentru viteza vântului și extinderea informațiilor afișate. Astfel, aplicația reprezintă o bază funcțională pentru dezvoltări meteo ulterioare.
+
+## 11. Concluzie
+
+## 12. Autori
 
 - **Cimbriciuc-Nichita**
 
-## 12. Licență
+## 13. Licență
 
 Proiectul este distribuit sub licența **MIT**, care permite folosirea, modificarea și redistribuirea codului, cu păstrarea notificării de copyright și a textului licenței. Consultă fișierul [LICENSE](LICENSE) pentru termenii compleți.
