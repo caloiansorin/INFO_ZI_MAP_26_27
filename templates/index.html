@@ -22,90 +22,43 @@
             Monitorizarea preturilor produselor eMAG
         </p>
 
-        <!-- PRODUS -->
-        <div style="background:#1e293b;
-                    padding:25px;
-                    border-radius:12px;
-                    margin-top:25px;">
-
-            <h2>{{nume_produs}}</h2>
-
-            <p style="color:#94a3b8;">
-                Ultimul pret inregistrat
-            </p>
-
-            <h1 style="font-size:40px;
-                       margin:10px 0;">
-                {{pret_actual}}
-            </h1>
-
-            <p>Ultima verificare: {{timestamp}}</p>
-
-            <a href="{{url_produs}}"
-               target="_blank"
-               style="color:#38bdf8;">
-                Vezi produsul pe eMAG
-            </a>
-        </div>
-
-        <!-- STATISTICI -->
-        <div style="display:flex; gap:15px;
-                    flex-wrap:wrap; margin-top:20px;">
-
-            <div style="background:#1e293b;
-                        padding:20px; border-radius:10px;
-                        flex:1; min-width:140px;">
-                <p>Pret minim</p>
-                <h2 style="color:#4ade80;">{{pret_minim}} lei</h2>
+        <form method="get" action="/"
+              style="background:#1e293b; padding:25px;
+                     border-radius:12px; margin-top:25px;">
+            <label for="product_urls" style="display:block; margin-bottom:10px;">
+                Linkuri produse eMAG (separate prin spatiu sau ;)
+            </label>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <textarea id="product_urls" name="product_urls" required
+                          rows="4"
+                          placeholder="https://www.emag.ro/produs1; https://www.emag.ro/produs2"
+                          style="flex:1; min-width:240px; padding:12px;
+                                 border:0; border-radius:6px;">{{product_urls}}</textarea>
+                <button type="submit"
+                        style="padding:12px 20px; border:0; border-radius:6px;
+                               background:#38bdf8; color:#0f172a;
+                               font-weight:bold; cursor:pointer;">
+                    Citeste pretul
+                </button>
             </div>
+        </form>
 
-            <div style="background:#1e293b;
-                        padding:20px; border-radius:10px;
-                        flex:1; min-width:140px;">
-                <p>Pret maxim</p>
-                <h2 style="color:#f87171;">{{pret_maxim}} lei</h2>
-            </div>
-
-            <div style="background:#1e293b;
-                        padding:20px; border-radius:10px;
-                        flex:1; min-width:140px;">
-                <p>Verificari</p>
-                <h2>{{numar_verificari}}</h2>
-            </div>
+        {% for produs in results %}
+        <div style="background:#1e293b; padding:25px;
+                    border-radius:12px; margin-top:20px; overflow-wrap:anywhere;">
+            {% if produs.error %}
+            <p role="alert" style="color:#fca5a5;">{{produs.error}}</p>
+            <p>{{produs.url}}</p>
+            {% else %}
+            <h2>{{produs.nume}}</h2>
+            <p style="color:#94a3b8;">Pret actual</p>
+            <h1 style="font-size:40px; margin:10px 0;">{{produs.pret}} lei</h1>
+            <p>Verificat la: {{produs.timestamp}}</p>
+            <a href="{{produs.url}}" target="_blank" rel="noopener noreferrer"
+               style="color:#38bdf8;">Vezi produsul pe eMAG</a>
+            {% endif %}
         </div>
-
-        <!-- ISTORIC -->
-        <div style="background:#1e293b;
-                    padding:25px; border-radius:12px;
-                    margin-top:20px; overflow-x:auto;">
-
-            <h2>Istoric preturi</h2>
-
-            <table style="width:100%;
-                          border-collapse:collapse;">
-
-                <thead>
-                    <tr style="background:#334155;">
-                        <th style="padding:12px;">ID</th>
-                        <th style="padding:12px;">Pret</th>
-                        <th style="padding:12px;">Data</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                {% for produs in continut_db %}
-                    <tr style="text-align:center;
-                               border-bottom:1px solid #475569;">
-                        <td style="padding:12px;">{{produs.id}}</td>
-                        <td style="padding:12px;">{{produs.pret}} lei</td>
-                        <td style="padding:12px;">
-                            {{produs.data_verificare}}
-                        </td>
-                    </tr>
-                </tbody>
-                {% endfor %}
-            </table>
-        </div>
+        {% endfor %}
 
         <p style="text-align:center;
                   color:#64748b; margin-top:30px;">
