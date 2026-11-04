@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from email.mime.text import MIMEText
 import datetime
-import sqlite3 #pip3 isntall sqlite3
+import sqlite3
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 import uvicorn
