@@ -1,2 +1,5 @@
-#Fisierele care trebuie excluse din incarcare
 .env
+**/.env
+**/pret.db
+**/__pycache__/
+**/.idea/
