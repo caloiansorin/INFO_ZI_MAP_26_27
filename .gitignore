@@ -1,9 +1,16 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Proiect
+.idea/
+.venv/
+__pycache__/
 .env
-=======
-.env
->>>>>>> 80bc530b774684952b2b6469b62299fb0cbe10bb
-=======
-.env
->>>>>>> 8d9c122f70cd9ddffea3ed98fdef2dd7bc3ca966
+*.db
