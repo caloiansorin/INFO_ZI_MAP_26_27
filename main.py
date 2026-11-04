@@ -34,6 +34,7 @@ def home(request: Request):
 load_dotenv()
 email_expeditor = os.getenv("EMAIL_EXPEDITOR")
 app_password = os.getenv("APP_PASSWORD")
+adresa_db= os.getenv("ADRESA_DB")
 
 def trimite_email(destinatar,subiect,continut):
     mesaj= MIMEText(continut,"plain","utf-8")
@@ -64,7 +65,7 @@ def verifica_informatiile (url):
     return text_pret,nume_produs
 
 def salvare_pret(pret):
-    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    conexiune = sqlite3.connect(f"{adresa_db}")
     cursor = conexiune.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS pret (
@@ -82,7 +83,7 @@ def salvare_pret(pret):
     print("Informatiile au fost salvate")
 
 def afiseaza_continut_db():
-    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    conexiune = sqlite3.connect(f"{adresa_db}")
     conexiune.row_factory = sqlite3.Row
     cursor = conexiune.cursor()
     cursor.execute("""
@@ -94,7 +95,7 @@ def afiseaza_continut_db():
     return lista
 
 def calculeaza_minim_maxim_numar():
-    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    conexiune = sqlite3.connect(f"{adresa_db}")
     cursor = conexiune.cursor()
 
     cursor.execute("""
