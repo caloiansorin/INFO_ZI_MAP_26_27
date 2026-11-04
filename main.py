@@ -1,74 +1,136 @@
-from fastapi import FastAPI
-from fastapi.responses import FileResponse
-from dotenv import load_dotenv
 import os
 import requests
-from starlette.responses import RedirectResponse
-from urllib.parse import quote
-
-
-load_dotenv()
-cheie_api_openweather = os.getenv("API_KEY")
-from fastapi import FastAPI, Request, Form,Query
+import re
+import smtplib #pip3 install smtplib
+from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from email.mime.text import MIMEText
+import datetime
+import sqlite3 #pip3 isntall sqlite3
+from urllib.parse import parse_qs
+from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-
+import uvicorn
 app = FastAPI()
-templates = Jinja2Templates(directory="items")
-
-@app.post("/submit")
-async def submit(oras: str = Form("Iasi")):
-    oras = oras.strip()
-
-    return RedirectResponse(
-        url=f"/?oras={quote(oras, safe='')}",
-        status_code=303
-    )
-# @app.post("/ceva")
-# async def submit(request: Request, ceva: str = Form(...)):
-#     return RedirectResponse(
-#         url=f"?ceva={ceva}",
-#         status_code=303
-#     )
-
+templates = Jinja2Templates(directory="templates")
 @app.get("/")
-def home(request: Request,oras: str = Query("Iasi"), ceva: str = ""):
-    oras = oras.strip()
-    vremea, temperatura, viteza_vant = afisare_vreme(oras)
+def home(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"results": [], "raw_urls": ""}
+    )
+
+@app.post("/")
+async def verifica_produs(request: Request):
+    form_data = parse_qs((await request.body()).decode())
+    raw_urls = form_data.get("urls", [""])[0]
+    submitted_urls = [
+        url.strip() for url in re.split(r"[,\s]+", raw_urls) if url.strip()
+    ]
+    results = []
+    for submitted_url in submitted_urls:
+        if "emag.ro" not in submitted_url:
+            results.append({"url": submitted_url, "error": "Link invalid: nu contine emag.ro."})
+            continue
+        try:
+            rezultat = verifica_informatiile(submitted_url)
+        except Exception:
+            results.append({"url": submitted_url, "error": "Nu s-au putut obtine informatiile produsului."})
+            continue
+        if rezultat is None:
+            results.append({"url": submitted_url, "error": "Nu s-au putut obtine informatiile produsului."})
+            continue
+        results.append({
+            "url": submitted_url,
+            "nume_produs": rezultat[1],
+            "pret_actual": rezultat[0]
+        })
+
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context={
-        "vreme":vremea,
-        "temperatura":temperatura,
-        "viteza_vant":viteza_vant,
-        "oras":oras,
-        "mesaj":ceva
-                 }
+            "results": results,
+            "raw_urls": raw_urls,
+            "error": "Nu ai introdus niciun link." if not submitted_urls else None
+        }
     )
+load_dotenv()
+email_expeditor = os.getenv("EMAIL_EXPEDITOR")
+app_password = os.getenv("APP_PASSWORD")
 
-def raspuns_geocoding(oras=""):
-    url_geocoding = "http://api.openweathermap.org/geo/1.0/direct?"
-    raspuns = requests.get(url_geocoding, params={
-        'q': oras,
-        'appid': cheie_api_openweather
-    }).json()
-    return raspuns
+def trimite_email(destinatar,subiect,continut):
+    mesaj= MIMEText(continut,"plain","utf-8")
+    mesaj["Subject"] = subiect
+    mesaj["From"] = email_expeditor
+    mesaj["To"] = destinatar
+    with smtplib.SMTP_SSL("smtp.gmail.com",465) as email:
+        email.login(email_expeditor,app_password)
+        email.sendmail(email_expeditor,destinatar,mesaj.as_string())
+    return True
 
+def verifica_informatiile (url):
+    antet_cerere = {"User-Agent":"Mozilla/5.0"}
+    raspuns_server= requests.get(url,headers=antet_cerere,timeout=15)
+    raspuns_server.raise_for_status()
+    pagina_html = BeautifulSoup(raspuns_server.text, "html.parser")
+    pret = pagina_html.find("p",class_="product-new-price")
+    nume_produs = (pagina_html.find("h1",class_="page-title")).get_text(strip=True)
+    if pret is None:
+        print("PRETUL NU A FOST GASIT")
+        return  None
+    text_pret = pret.find(string=True,recursive=False).strip()
+    # nume_produs = nume_produs(string=True,recursive=False)
+    if text_pret is None:
+        return None
+    text_pret = int(re.sub(r"\D","",text_pret))
+    return text_pret,nume_produs
 
-def afisare_vreme(oras):
-    url = "https://api.openweathermap.org/data/2.5/weather?"
-    lat = raspuns_geocoding(oras)[0]['lat']
-    lon = raspuns_geocoding(oras)[0]['lon']
-    raspuns = requests.get(url,params={
-        'lat':lat,
-        'lon':lon,
-        'appid':cheie_api_openweather,
-        'units':'metric',
-        'lang':'ro'
-    }).json()
-    starea_vremii = raspuns['weather'][0]['description']
-    temperatura = raspuns['main']['temp']
-    viteza_vant = raspuns['wind']['speed']
-    return starea_vremii,temperatura,viteza_vant
+def salvare_pret(pret):
+    conexiune = sqlite3.connect("C:\\Users\\amade\\Desktop\\Cursuri_an2\\MAP\\Laborator\\proiect2-v2\\INFO_ZI_MAP_26_27\\pret.db")
+    cursor = conexiune.cursor()
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS pret (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pret INTEGER NOT NULL,
+    data_verificare TEXT NOT NULL
+    )
+    """)
+    cursor.execute("""
+    INSERT INTO pret (pret,data_verificare)
+        VALUES (?,?)
+    """,(pret,datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")))
+    conexiune.commit()
+    cursor.close()
+    print("Informatiile au fost salvate")
+def afiseaza_continut_db():
+    conexiune = sqlite3.connect("C:\\Users\\amade\\Desktop\\Cursuri_an2\\MAP\\Laborator\\proiect2-v2\\INFO_ZI_MAP_26_27\\pret.db")
+    cursor = conexiune.cursor()
+    cursor.execute("""
+    SELECT * FROM pret
+    """)
+    rezultat = cursor.fetchall()
+    for i in rezultat:
+        print(i)
 
+def calculeaza_minim():
+    conexiune = sqlite3.connect("C:\\Users\\amade\\Desktop\\Cursuri_an2\\MAP\\Laborator\\proiect2-v2\\INFO_ZI_MAP_26_27\\pret.db")
+    cursor = conexiune.cursor()
+    cursor.execute("""
+    SELECT MIN(pret) FROM pret
+    """)
+    rezultat = cursor.fetchall()
+    return rezultat[0][0]
+def calculeaza_maxim():
+    conexiune = sqlite3.connect("C:\\Users\\amade\\Desktop\\Cursuri_an2\\MAP\\Laborator\\proiect2-v2\\INFO_ZI_MAP_26_27\\pret.db")
+    cursor = conexiune.cursor()
+    cursor.execute("""
+    SELECT MAX(pret) FROM pret
+    """)
+    rezultat = cursor.fetchall()
+    return rezultat[0][0]
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
