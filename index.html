@@ -1,0 +1,508 @@
+{%- macro lei(valoare) -%}{{ "{:,}".format(valoare)|replace(",", ".") }} lei{%- endmacro -%}
+
+{%- macro grafic(analiza) -%}
+    {%- set puncte = analiza.puncte -%}
+    <svg class="grafic" viewBox="0 0 320 64" role="img"
+         aria-label="Evoluția prețului în ultimele {{ puncte|length }} verificări, între {{ lei(analiza.minim) }} și {{ lei(analiza.maxim) }}">
+        {% if puncte|length > 1 %}
+            <polyline points="{% for p in puncte %}{{ p.x }},{{ p.y }} {% endfor %}"></polyline>
+        {% endif %}
+        {% set ultimul = puncte|last %}
+        <circle class="capat" cx="{{ ultimul.x }}" cy="{{ ultimul.y }}" r="4"></circle>
+        {% for p in puncte %}
+            <circle class="zona" cx="{{ p.x }}" cy="{{ p.y }}" r="10"><title>{{ lei(p.pret) }} · {{ p.data }}</title></circle>
+        {% endfor %}
+    </svg>
+{%- endmacro -%}
+
+{%- macro statistici(analiza) -%}
+    <dl class="statistici">
+        <div><dt>Minim</dt><dd>{{ lei(analiza.minim) }}</dd></div>
+        <div><dt>Medie</dt><dd>{{ lei(analiza.medie) }}</dd></div>
+        <div><dt>Maxim</dt><dd>{{ lei(analiza.maxim) }}</dd></div>
+    </dl>
+{%- endmacro -%}
+
+{%- macro rand_link(valoare="") -%}
+    <div class="rand-link">
+        <input type="url" name="link" placeholder="https://www.emag.ro/..." value="{{ valoare }}" aria-label="Link produs eMAG">
+        <button type="button" class="sterge" aria-label="Șterge linkul" title="Șterge linkul">&times;</button>
+    </div>
+{%- endmacro -%}
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor Preț eMAG</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --fundal: #f5f5f3;
+            --suprafata: #ffffff;
+            --suprafata-2: #f5f5f3;
+            --bordura: #e3e2dd;
+            --text: #1b1b1a;
+            --text-2: #5c5b56;
+            --accent: #2a78d6;
+            --accent-hover: #1f62b4;
+            --bun: #0b7a3e;
+            --bun-fundal: #e4f4ea;
+            --rau: #b4361a;
+            --rau-fundal: #fbeae5;
+            --neutru-fundal: #eeeeeb;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                color-scheme: dark;
+                --fundal: #141413;
+                --suprafata: #1f1f1d;
+                --suprafata-2: #2a2a27;
+                --bordura: #363633;
+                --text: #f0efec;
+                --text-2: #b3b2a9;
+                --accent: #5a9ff0;
+                --accent-hover: #7cb4f5;
+                --bun: #5fd38f;
+                --bun-fundal: #17352a;
+                --rau: #f28f75;
+                --rau-fundal: #41231a;
+                --neutru-fundal: #2e2e2b;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--fundal);
+            color: var(--text);
+            font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        }
+
+        .container {
+            max-width: 1040px;
+            margin: 0 auto;
+            padding: 40px 24px 64px;
+        }
+
+        header { margin-bottom: 24px; }
+        header h1 { margin: 0; font-size: 30px; line-height: 1.2; letter-spacing: -0.02em; }
+        header p { margin: 4px 0 0; color: var(--text-2); }
+
+        h2 { margin: 0 0 12px; font-size: 18px; }
+        section { margin-top: 32px; }
+
+        a { color: var(--accent); }
+
+        .card {
+            background: var(--suprafata);
+            border: 1px solid var(--bordura);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        /* formular */
+        .randuri-link { display: grid; gap: 8px; }
+        .rand-link { display: flex; gap: 8px; }
+
+        input[type="url"] {
+            flex: 1;
+            min-width: 0;
+            padding: 11px 12px;
+            font: inherit;
+            color: inherit;
+            background: var(--suprafata);
+            border: 1px solid var(--bordura);
+            border-radius: 8px;
+        }
+
+        input[type="url"]:focus-visible, button:focus-visible, summary:focus-visible, a:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        button { font: inherit; cursor: pointer; border-radius: 8px; }
+
+        .sterge {
+            width: 44px;
+            flex: none;
+            font-size: 20px;
+            color: var(--text-2);
+            background: transparent;
+            border: 1px solid var(--bordura);
+        }
+
+        .sterge:hover { background: var(--suprafata-2); color: var(--text); }
+
+        .actiuni {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .adauga {
+            padding: 10px 14px;
+            color: var(--accent);
+            background: transparent;
+            border: 1px dashed var(--accent);
+        }
+
+        .adauga:hover { background: var(--suprafata-2); }
+
+        .trimite {
+            padding: 11px 22px;
+            font-weight: 600;
+            color: #fff;
+            background: #2a78d6;
+            border: 0;
+        }
+
+        .trimite:hover { background: #1f62b4; }
+        .trimite:disabled { opacity: 0.65; cursor: progress; }
+
+        .indiciu { margin: 12px 0 0; font-size: 14px; color: var(--text-2); }
+
+        /* aviz */
+        .aviz { margin-top: 16px; padding: 12px 16px; border-radius: 8px; background: var(--neutru-fundal); }
+
+        /* rezumat */
+        .rezumat {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+        }
+
+        .rezumat .card { padding: 14px 16px; min-width: 0; }
+        .eticheta { margin: 0; font-size: 13px; color: var(--text-2); }
+        .rezumat .valoare { margin: 2px 0 0; font-size: 22px; font-weight: 650; }
+        .rezumat .detaliu {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* produse */
+        .produse {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .produs { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+
+        .produs h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.35;
+            overflow-wrap: anywhere;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            overflow: hidden;
+        }
+
+        .insigne { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .insigna {
+            padding: 2px 10px;
+            font-size: 13px;
+            font-weight: 550;
+            border-radius: 999px;
+            white-space: nowrap;
+            background: var(--neutru-fundal);
+            color: var(--text-2);
+        }
+
+        .insigna.bun { background: var(--bun-fundal); color: var(--bun); }
+        .insigna.rau { background: var(--rau-fundal); color: var(--rau); }
+
+        .linie-pret { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+        .pret { font-size: 32px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
+        .schimbare { font-size: 14px; font-weight: 550; color: var(--text-2); }
+        .schimbare.bun { color: var(--bun); }
+        .schimbare.rau { color: var(--rau); }
+
+        .grafic { display: block; width: 100%; height: auto; }
+        .grafic polyline { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+        .grafic .capat { fill: var(--accent); stroke: var(--suprafata); stroke-width: 2; }
+        .grafic .zona { fill: transparent; }
+
+        .statistici {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 0;
+            padding: 10px 12px;
+            background: var(--suprafata-2);
+            border-radius: 8px;
+        }
+
+        .statistici dt { font-size: 12px; color: var(--text-2); }
+        .statistici dd { margin: 0; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+        .subsol {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 4px 12px;
+            margin-top: auto;
+            font-size: 14px;
+            color: var(--text-2);
+        }
+
+        .produs-eroare { border-color: var(--rau); }
+        .produs-eroare .url { margin: 0; font-size: 14px; color: var(--text-2); overflow-wrap: anywhere; }
+        .produs-eroare .mesaj { margin: 0; color: var(--rau); overflow-wrap: anywhere; }
+
+        /* istoric */
+        .istoric { padding: 0; overflow: hidden; }
+        .istoric details + details { border-top: 1px solid var(--bordura); }
+
+        .istoric summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .istoric summary::-webkit-details-marker { display: none; }
+        .istoric summary::before { content: "›"; font-size: 20px; line-height: 1; color: var(--text-2); transition: transform .15s; }
+        .istoric details[open] summary::before { transform: rotate(90deg); }
+        .istoric summary:hover { background: var(--suprafata-2); }
+
+        .nume-istoric { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 550; }
+        .pret-istoric { white-space: nowrap; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+        .detalii-istoric { display: grid; gap: 12px; padding: 4px 20px 20px; }
+        .tabel { max-height: 280px; overflow: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        th, td { padding: 8px 4px; text-align: left; border-bottom: 1px solid var(--bordura); white-space: nowrap; }
+        th { position: sticky; top: 0; background: var(--suprafata); font-weight: 600; color: var(--text-2); }
+        .dreapta { text-align: right; font-variant-numeric: tabular-nums; }
+
+        .gol { padding: 24px; text-align: center; color: var(--text-2); }
+
+        @media (max-width: 600px) {
+            .container { padding: 24px 16px 48px; }
+            header h1 { font-size: 24px; }
+            .card { padding: 16px; }
+            .trimite, .adauga { width: 100%; }
+            .pret { font-size: 28px; }
+            .istoric summary { padding: 12px 16px; flex-wrap: wrap; }
+            .istoric .insigna { display: none; }
+            .detalii-istoric { padding: 4px 16px 16px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Monitor Preț eMAG</h1>
+            <p>Adaugă unul sau mai multe produse și vezi cum stau prețurile față de verificările anterioare.</p>
+        </header>
+
+        <form class="card" id="formular" action="/verifica" method="get" data-max-linkuri="{{ max_linkuri }}">
+            <h2>Produse de verificat</h2>
+            <div class="randuri-link" id="randuri">
+                {% for link in linkuri %}
+                    {{ rand_link(link) }}
+                {% else %}
+                    {{ rand_link() }}
+                {% endfor %}
+            </div>
+            <div class="actiuni">
+                <button type="button" class="adauga" id="adauga">+ Adaugă alt URL</button>
+                <button type="submit" class="trimite" id="trimite">Verifică</button>
+            </div>
+            <p class="indiciu">Maximum {{ max_linkuri }} linkuri. Poți lipi o listă întreagă într-un singur câmp. Produsele se verifică pe rând, cu câteva secunde de pauză, ca să nu blocheze eMAG cererile.</p>
+        </form>
+
+        {% if aviz %}
+            <p class="aviz" role="status">{{ aviz }}</p>
+        {% endif %}
+
+        {% if rezumat %}
+            <section aria-labelledby="titlu-rezultate">
+                <h2 id="titlu-rezultate">Rezultate</h2>
+                <div class="rezumat">
+                    <div class="card">
+                        <p class="eticheta">Verificate cu succes</p>
+                        <p class="valoare">{{ rezumat.reusite }} din {{ rezumat.total }}</p>
+                    </div>
+                    {% if rezumat.ieftin %}
+                        <div class="card">
+                            <p class="eticheta">Cel mai ieftin</p>
+                            <p class="valoare">{{ lei(rezumat.ieftin.pret) }}</p>
+                            <p class="detaliu" title="{{ rezumat.ieftin.nume }}">{{ rezumat.ieftin.nume }}</p>
+                        </div>
+                    {% endif %}
+                    {% if rezumat.cotat %}
+                        <div class="card">
+                            <p class="eticheta">Cel mai bine cotat</p>
+                            <p class="valoare">{{ "%.2f"|format(rezumat.cotat.rating) }} ★</p>
+                            <p class="detaliu" title="{{ rezumat.cotat.nume }}">{{ rezumat.cotat.nume }}</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="produse">
+                    {% for produs in produse %}
+                        {% if produs.eroare %}
+                            <article class="card produs produs-eroare">
+                                <h3>{{ produs.nume or "Produs neverificat" }}</h3>
+                                <p class="mesaj">{{ produs.eroare }}</p>
+                                <p class="url">{{ produs.url }}</p>
+                            </article>
+                        {% else %}
+                            {% set analiza = produs.analiza %}
+                            <article class="card produs">
+                                <h3 title="{{ produs.nume }}">{{ produs.nume or "Produs necunoscut" }}</h3>
+                                <div class="insigne">
+                                    <span class="insigna {{ analiza.ton }}">{{ analiza.verdict }}</span>
+                                    {% if rezumat.ieftin is sameas(produs) %}<span class="insigna bun">Cel mai ieftin din listă</span>{% endif %}
+                                    {% if rezumat.cotat is sameas(produs) %}<span class="insigna bun">Cel mai bine cotat</span>{% endif %}
+                                </div>
+                                <div class="linie-pret">
+                                    <span class="pret">{{ lei(produs.pret) }}</span>
+                                    {% if analiza.diferenta is none %}
+                                        <span class="schimbare">fără date anterioare</span>
+                                    {% elif analiza.diferenta == 0 %}
+                                        <span class="schimbare">= neschimbat față de verificarea anterioară</span>
+                                    {% elif analiza.diferenta < 0 %}
+                                        <span class="schimbare bun">▼ {{ lei(-analiza.diferenta) }} ({{ "%.1f"|format(-analiza.procent) }}%) față de verificarea anterioară</span>
+                                    {% else %}
+                                        <span class="schimbare rau">▲ {{ lei(analiza.diferenta) }} ({{ "%.1f"|format(analiza.procent) }}%) față de verificarea anterioară</span>
+                                    {% endif %}
+                                </div>
+                                {{ grafic(analiza) }}
+                                {{ statistici(analiza) }}
+                                <div class="subsol">
+                                    <span>
+                                        {% if produs.rating is not none %}
+                                            ★ {{ "%.2f"|format(produs.rating) }} ({{ produs.nr_recenzii }} recenzii)
+                                        {% else %}
+                                            fără rating
+                                        {% endif %}
+                                        · {{ analiza.nr_verificari }} verificări
+                                    </span>
+                                    <a href="{{ produs.url }}" target="_blank" rel="noopener">Vezi pe eMAG</a>
+                                </div>
+                            </article>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+
+        <section aria-labelledby="titlu-istoric">
+            <h2 id="titlu-istoric">Istoric pe produse</h2>
+            <div class="card istoric">
+                {% for grup in grupuri %}
+                    <details>
+                        <summary>
+                            <span class="nume-istoric" title="{{ grup.nume }}">{{ grup.nume }}</span>
+                            <span class="insigna {{ grup.analiza.ton }}">{{ grup.analiza.verdict }}</span>
+                            <span class="pret-istoric">{{ lei(grup.analiza.curent) }}</span>
+                        </summary>
+                        <div class="detalii-istoric">
+                            {{ grafic(grup.analiza) }}
+                            {{ statistici(grup.analiza) }}
+                            <div class="tabel">
+                                <table>
+                                    <thead>
+                                        <tr><th>Data verificării</th><th class="dreapta">Preț</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for rand in grup.randuri %}
+                                            <tr><td>{{ rand.data_verificare }}</td><td class="dreapta">{{ lei(rand.pret) }}</td></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </details>
+                {% else %}
+                    <p class="gol">Nu există încă prețuri salvate.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+
+    <template id="sablon-rand">{{ rand_link() }}</template>
+
+    <script>
+        const formular = document.getElementById("formular");
+        const MAX_LINKURI = Number(formular.dataset.maxLinkuri);
+        const randuri = document.getElementById("randuri");
+        const adauga = document.getElementById("adauga");
+        const trimite = document.getElementById("trimite");
+        const sablon = document.getElementById("sablon-rand");
+
+        function actualizeaza() {
+            const numar = randuri.children.length;
+            adauga.hidden = numar >= MAX_LINKURI;
+            randuri.querySelectorAll(".sterge").forEach(b => b.hidden = numar === 1);
+        }
+
+        function randNou(valoare = "") {
+            const rand = sablon.content.firstElementChild.cloneNode(true);
+            rand.querySelector("input").value = valoare;
+            randuri.appendChild(rand);
+            return rand;
+        }
+
+        adauga.addEventListener("click", () => {
+            randNou().querySelector("input").focus();
+            actualizeaza();
+        });
+
+        randuri.addEventListener("click", e => {
+            if (e.target.matches(".sterge")) {
+                e.target.closest(".rand-link").remove();
+                actualizeaza();
+            }
+        });
+
+        // o lista lipita intr-un camp se imparte pe randuri separate
+        randuri.addEventListener("paste", e => {
+            const bucati = e.clipboardData.getData("text").split(/\s+/).filter(Boolean);
+            if (bucati.length < 2) return;
+            e.preventDefault();
+            e.target.value = bucati.shift();
+            bucati.forEach(link => randNou(link));
+            actualizeaza();
+        });
+
+        formular.addEventListener("submit", () => {
+            trimite.disabled = true;
+            trimite.textContent = "Se verifică…";
+        });
+
+        // cand te intorci cu Back, butonul nu trebuie sa ramana blocat
+        window.addEventListener("pageshow", () => {
+            trimite.disabled = false;
+            trimite.textContent = "Verifică";
+        });
+
+        actualizeaza();
+    </script>
+</body>
+</html>
