@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalii produs</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        color: #172033;
+        background: linear-gradient(135deg, #f4f8ff 0%, #eef3fb 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 3rem 1rem;
+        box-sizing: border-box;
+      }
+      .container {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .brand {
+        color: #2463eb;
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin-bottom: 0.8rem;
+      }
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3rem);
+        color: #102a56;
+      }
+      .intro {
+        color: #5d6b82;
+        line-height: 1.6;
+        margin: 0.8rem 0 2rem;
+      }
+      form {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.7rem;
+        background: #fff;
+        border: 1px solid #dce5f2;
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(34, 67, 115, 0.1);
+      }
+      input {
+        flex: 1;
+        padding: 0.7rem;
+        min-width: 0;
+        border: 0;
+        outline: 0;
+        font-size: 1rem;
+      }
+      textarea {
+        flex: 1;
+        min-width: 0;
+        min-height: 8rem;
+        padding: 0.7rem;
+        border: 0;
+        outline: 0;
+        resize: vertical;
+        font: inherit;
+        line-height: 1.5;
+      }
+      button {
+        padding: 0.7rem 1rem;
+        cursor: pointer;
+        border: 0;
+        border-radius: 9px;
+        color: #fff;
+        background: #2463eb;
+        font-weight: 700;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+      }
+      button:hover {
+        background: #174fca;
+        transform: translateY(-1px);
+      }
+      .error {
+        margin-top: 1rem;
+        padding: 0.9rem 1rem;
+        border-radius: 9px;
+        background: #fff0ef;
+        color: #b42318;
+      }
+      .results {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: #fff;
+        border: 1px solid #dce5f2;
+        border-radius: 14px;
+        box-shadow: 0 10px 24px rgba(34, 67, 115, 0.08);
+      }
+      .results h2 {
+        margin: 0 0 1rem;
+        color: #102a56;
+      }
+      .results p {
+        margin: 0;
+        color: #5d6b82;
+      }
+      .results strong {
+        color: #172033;
+      }
+      .result + .result {
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid #dce5f2;
+      }
+      .back {
+        display: inline-block;
+        margin-top: 2rem;
+        color: #2463eb;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .back:hover {
+        text-decoration: underline;
+      }
+      @media (max-width: 560px) {
+        body {
+          padding-top: 2rem;
+        }
+        form {
+          flex-direction: column;
+        }
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <div class="brand">eMAG · Verificare produs</div>
+      <h1>Detalii produs</h1>
+      <p class="intro">
+        Introdu câte un URL pe fiecare rând pentru a afla rapid titlul și prețul
+        tuturor produselor.
+      </p>
+      <form method="post" action="/index2.html">
+        <textarea
+          name="link"
+          placeholder="https://www.emag.ro/produs-1/...&#10;https://www.emag.ro/produs-2/..."
+          required
+        ></textarea>
+        <button type="submit">Fetch data from eMAG</button>
+      </form>
+      {% if eroare %}
+      <p class="error">{{ eroare }}</p>
+      {% endif %} {% if rezultate %}
+      <section class="results">
+        <h2>Rezultatele produselor</h2>
+        {% for rezultat in rezultate %}
+        <div class="result">
+          <h3>{{ rezultat.titlu }}</h3>
+          <p><strong>Preț:</strong> {{ rezultat.pret }} lei</p>
+        </div>
+        {% endfor %}
+      </section>
+      {% elif titlu %}
+      <section class="results">
+        <h2>{{ titlu }}</h2>
+        <p><strong>Preț:</strong> {{ pret }} lei</p>
+      </section>
+      {% endif %}
+
+      <p><a class="back" href="/">← Înapoi la index</a></p>
+    </main>
+  </body>
+</html>
