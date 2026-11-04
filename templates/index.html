@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ro">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitorizare preturi</title>
 </head>
 
@@ -29,6 +28,11 @@
                     margin-top:25px;">
 
             <h2>{{nume_produs}}</h2>
+            <form action="/search-product" method="post">
+                <label>Product URL:</label>
+                <input type="url" name="url" required>
+                <button type="submit">Search Product</button>
+            </form>
 
             <p style="color:#94a3b8;">
                 Ultimul pret inregistrat
@@ -41,9 +45,7 @@
 
             <p>Ultima verificare: {{timestamp}}</p>
 
-            <a href="{{url_produs}}"
-               target="_blank"
-               style="color:#38bdf8;">
+            <a href="{{url_produs}}" target="_blank" style="color:#38bdf8;">
                 Vezi produsul pe eMAG
             </a>
         </div>
@@ -93,7 +95,7 @@
                 </thead>
 
                 <tbody>
-                {% for produs in continut_db %}
+                    {% for produs in continut_db %}
                     <tr style="text-align:center;
                                border-bottom:1px solid #475569;">
                         <td style="padding:12px;">{{produs.id}}</td>
@@ -114,4 +116,5 @@
 
     </main>
 </body>
+
 </html>

@@ -1,6 +1,8 @@
 import os
 from pickletools import read_uint1
-
+from fastapi.responses import RedirectResponse
+from fastapi import Form
+from urllib.parse import quote
 import requests
 import re
 import smtplib #pip3 install smtplib
@@ -16,7 +18,7 @@ url = "https://www.emag.ro/memorie-ram-g-skill-96gb-ddr5-5600mhz-f5-5600j4040d48
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 @app.get("/")
-def home(request: Request):
+def home(request: Request, url: str = "https://www.emag.ro/memorie-ram-g-skill-96gb-ddr5-5600mhz-f5-5600j4040d48gx2-rs5k/pd/DGNTTTYBM/"):
     return templates.TemplateResponse(
         request=request,
         name="index.html",
@@ -64,7 +66,7 @@ def verifica_informatiile (url):
     return text_pret,nume_produs
 
 def salvare_pret(pret):
-    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    conexiune = sqlite3.connect("/home/aaa2/Desktop/AN2 Informatica/Proiecte/Metode avansate de programare/bs4/INFO_ZI_MAP_26_27/pret.db")
     cursor = conexiune.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS pret (
@@ -82,7 +84,7 @@ def salvare_pret(pret):
     print("Informatiile au fost salvate")
 
 def afiseaza_continut_db():
-    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    conexiune = sqlite3.connect("/home/aaa2/Desktop/AN2 Informatica/Proiecte/Metode avansate de programare/bs4/INFO_ZI_MAP_26_27/pret.db")
     conexiune.row_factory = sqlite3.Row
     cursor = conexiune.cursor()
     cursor.execute("""
@@ -94,7 +96,7 @@ def afiseaza_continut_db():
     return lista
 
 def calculeaza_minim_maxim_numar():
-    conexiune = sqlite3.connect("/Users/spikecsi/Desktop/BS4/pret.db")
+    conexiune = sqlite3.connect("/home/aaa2/Desktop/AN2 Informatica/Proiecte/Metode avansate de programare/bs4/INFO_ZI_MAP_26_27/pret.db")
     cursor = conexiune.cursor()
 
     cursor.execute("""
@@ -106,6 +108,23 @@ def calculeaza_minim_maxim_numar():
     conexiune.close()
 
     return rezultat[0], rezultat[1], rezultat[2]
+
+@app.post("/search-product")
+def SearchProduct(url: str=Form()):
+    connect = sqlite3.connect("/home/aaa2/Desktop/AN2 Informatica/Proiecte/Metode avansate de programare/bs4/INFO_ZI_MAP_26_27/pret.db")
+    try:
+        connect.row_factory = sqlite3.Row
+        cursor = connect.cursor()
+        cursor.execute("SELECT * FROM pret")
+        rezultat = cursor.fetchall()
+        listaRez = [dict(i) for i in rezultat]
+    finally:
+        connect.close()
+    return RedirectResponse(
+        url=f"/?url={quote(url, safe='')}",
+        status_code=303
+    )
+        
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
