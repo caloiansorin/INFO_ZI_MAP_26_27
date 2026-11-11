@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a href="/" class="logo">
+        <span class="logo-mark">◐</span>
+        <span>Dashboard</span>
+      </a>
+      <nav class="nav">
+        <a href="/home" class="active">Acasă</a>
+      </nav>
+      <div class="clock">14:32</div>
+    </header>
+
+    <main class="container">
+      <section class="greeting">
+        <h1>Bună ziua!</h1>
+        <p>Miercuri, 11 noiembrie 2026</p>
+      </section>
+
+      <div class="grid">
+        <!-- ============ SARCINI ============ -->
+        <article class="card card-tasks">
+          <div class="card-header">
+            <h2>Sarcinile zilei</h2>
+            <span class="muted">2 din 5 finalizate</span>
+          </div>
+
+          <div class="progress">
+            <div class="progress-bar" style="width: 40%"></div>
+          </div>
+
+          <form class="task-form" action="/sarcini/adauga" method="post">
+            <input
+              type="text"
+              name="titlu"
+              placeholder="Sarcină nouă..."
+              required
+            />
+            <select name="prioritate">
+              <option value="mica">Mică</option>
+              <option value="medie" selected>Medie</option>
+              <option value="mare">Mare</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Adaugă</button>
+          </form>
+
+          <ul class="task-list">
+            <li class="task done">
+              <form action="/sarcini/1/bifeaza" method="post">
+                <button type="submit" class="check" aria-label="Bifează">
+                  ✓
+                </button>
+              </form>
+              <span class="task-title"
+                >Citește capitolul 3 la Baze de date</span
+              >
+              <span class="badge badge-medie">Medie</span>
+              <form action="/sarcini/1/sterge" method="post">
+                <button type="submit" class="delete" aria-label="Șterge">
+                  ✕
+                </button>
+              </form>
+            </li>
+            <li class="task done">
+              <form action="/sarcini/2/bifeaza" method="post">
+                <button type="submit" class="check" aria-label="Bifează">
+                  ✓
+                </button>
+              </form>
+              <span class="task-title">Trimite tema la Programare Web</span>
+              <span class="badge badge-mare">Mare</span>
+              <form action="/sarcini/2/sterge" method="post">
+                <button type="submit" class="delete" aria-label="Șterge">
+                  ✕
+                </button>
+              </form>
+            </li>
+            <li class="task">
+              <form action="/sarcini/3/bifeaza" method="post">
+                <button
+                  type="submit"
+                  class="check"
+                  aria-label="Bifează"
+                ></button>
+              </form>
+              <span class="task-title"
+                >Pregătește prezentarea pentru seminar</span
+              >
+              <span class="badge badge-mare">Mare</span>
+              <form action="/sarcini/3/sterge" method="post">
+                <button type="submit" class="delete" aria-label="Șterge">
+                  ✕
+                </button>
+              </form>
+            </li>
+            <li class="task">
+              <form action="/sarcini/4/bifeaza" method="post">
+                <button
+                  type="submit"
+                  class="check"
+                  aria-label="Bifează"
+                ></button>
+              </form>
+              <span class="task-title">Cumpărături</span>
+              <span class="badge badge-mica">Mică</span>
+              <form action="/sarcini/4/sterge" method="post">
+                <button type="submit" class="delete" aria-label="Șterge">
+                  ✕
+                </button>
+              </form>
+            </li>
+            <li class="task">
+              <form action="/sarcini/5/bifeaza" method="post">
+                <button
+                  type="submit"
+                  class="check"
+                  aria-label="Bifează"
+                ></button>
+              </form>
+              <span class="task-title">Sală, ora 19:00</span>
+              <span class="badge badge-medie">Medie</span>
+              <form action="/sarcini/5/sterge" method="post">
+                <button type="submit" class="delete" aria-label="Șterge">
+                  ✕
+                </button>
+              </form>
+            </li>
+          </ul>
+        </article>
+
+        <!-- ============ VREME ============ -->
+        <article class="card card-weather">
+          <div class="card-header">
+            <h2>Vremea</h2>
+            <span class="muted small">Actualizat la 14:20</span>
+          </div>
+
+          <form class="search-form" action="/home" method="get">
+            <input
+              type="text"
+              name="oras"
+              placeholder="Caută oraș..."
+              value="București"
+            />
+            <button type="submit" class="btn">Caută</button>
+          </form>
+
+          <div class="weather-now">
+            <div class="weather-icon">⛅</div>
+            <div>
+              <div class="weather-temp">12°</div>
+              <div class="weather-desc">Parțial noros</div>
+              <div class="muted">București, România</div>
+            </div>
+          </div>
+
+          <ul class="weather-details">
+            <li><span class="muted">Vânt</span> 14 km/h</li>
+            <li><span class="muted">Umiditate</span> 68%</li>
+            <li><span class="muted">Min / Max</span> 6° / 14°</li>
+          </ul>
+
+          <ul class="forecast">
+            <li>
+              <span>Joi</span><span class="fc-icon">☀️</span
+              ><span>14° <span class="muted">5°</span></span>
+            </li>
+            <li>
+              <span>Vin</span><span class="fc-icon">🌤️</span
+              ><span>13° <span class="muted">6°</span></span>
+            </li>
+            <li>
+              <span>Sâm</span><span class="fc-icon">🌧️</span
+              ><span>9° <span class="muted">4°</span></span>
+            </li>
+            <li>
+              <span>Dum</span><span class="fc-icon">🌧️</span
+              ><span>8° <span class="muted">3°</span></span>
+            </li>
+            <li>
+              <span>Lun</span><span class="fc-icon">☁️</span
+              ><span>10° <span class="muted">2°</span></span>
+            </li>
+          </ul>
+        </article>
+
+        <!-- ============ CURS VALUTAR ============ -->
+        <article class="card card-currency">
+          <div class="card-header">
+            <h2>Curs valutar</h2>
+            <span class="muted small">11.11.2026</span>
+          </div>
+
+          <table class="rates">
+            <tbody>
+              <tr>
+                <td><strong>EUR</strong></td>
+                <td class="muted">Euro</td>
+                <td class="num">5,0912 RON</td>
+              </tr>
+              <tr>
+                <td><strong>USD</strong></td>
+                <td class="muted">Dolar american</td>
+                <td class="num">4,3805 RON</td>
+              </tr>
+              <tr>
+                <td><strong>GBP</strong></td>
+                <td class="muted">Liră sterlină</td>
+                <td class="num">5,8247 RON</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <form class="converter" action="/home" method="get">
+            <input type="number" name="suma" value="100" min="0" step="any" />
+            <select name="din">
+              <option value="EUR" selected>EUR</option>
+              <option value="USD">USD</option>
+              <option value="GBP">GBP</option>
+              <option value="RON">RON</option>
+            </select>
+            <span class="arrow">→</span>
+            <select name="in">
+              <option value="RON" selected>RON</option>
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+              <option value="GBP">GBP</option>
+            </select>
+            <button type="submit" class="btn">Convertește</button>
+          </form>
+          <p class="convert-result">100 EUR = <strong>509,12 RON</strong></p>
+        </article>
+
+        <!-- ============ CITAT ============ -->
+        <article class="card card-quote">
+          <div class="card-header">
+            <h2>Citatul zilei</h2>
+          </div>
+          <blockquote>
+            <p>„Well done is better than well said.”</p>
+            <footer>— Benjamin Franklin</footer>
+          </blockquote>
+        </article>
+
+        <!-- ============ SĂRBĂTORI ============ -->
+        <article class="card card-holiday">
+          <div class="card-header">
+            <h2>Următoarea sărbătoare</h2>
+          </div>
+          <div class="holiday-main">
+            <div class="countdown">
+              <span class="countdown-num">19</span>
+              <span class="muted">zile</span>
+            </div>
+            <div>
+              <div class="holiday-name">Sfântul Andrei</div>
+              <div class="muted">Luni, 30 noiembrie 2026</div>
+            </div>
+          </div>
+          <ul class="holiday-list">
+            <li>
+              <span>Ziua Națională a României</span
+              ><span class="muted">1 dec</span>
+            </li>
+            <li><span>Crăciunul</span><span class="muted">25 dec</span></li>
+          </ul>
+        </article>
+      </div>
+    </main>
+  </body>
+</html>
