@@ -1,8 +1,0 @@
-
-.env
-pret.db
-pagina.html
-__pycache__/
-*.pyc
-venv/
-.venv/
