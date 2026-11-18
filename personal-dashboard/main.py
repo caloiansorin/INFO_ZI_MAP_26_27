@@ -17,6 +17,17 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 
+def salut(ora_curenta):
+    ora_curenta = ora_curenta.strftime("%H")
+    ora_curenta = int(ora_curenta)
+    if ora_curenta < 12:
+        return "Buna dimineata"
+    else:
+        if ora_curenta < 18:
+            return "Buna ziua"
+    return "Buna seara"
+
+
 @app.get("/")
 def radacina():
     """Ruta / ne trimite direct la /home."""
@@ -25,4 +36,9 @@ def radacina():
 
 @app.get("/home")
 def home(request: Request):
-    return templates.TemplateResponse(request, "index.html")
+    acum = datetime.now()
+    return templates.TemplateResponse(
+        request,
+        "index.html",
+        {"ora": acum.strftime("%H:%M"), "salut": salut(acum)},
+    )
